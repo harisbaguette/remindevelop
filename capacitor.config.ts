@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'Remind Vault',
   webDir: 'public',
   server: {
-    url: 'https://YOUR_VERCEL_PROJECT_URL.vercel.app', // Update this after deployment
+    url: 'https://remindevelop.vercel.app',
     cleartext: true
   }
 };

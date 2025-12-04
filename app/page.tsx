@@ -5,7 +5,8 @@ import { supabase } from '@/lib/supabaseClient'
 import { useRouter, useSearchParams } from 'next/navigation'
 import LinkInput from '@/components/LinkInput'
 import LinkList from '@/components/LinkList'
-import { Inbox, Archive, Trash2, LogOut } from 'lucide-react'
+import SplashScreen from '@/components/SplashScreen'
+import { Inbox, Archive, Trash2, LogOut, Sparkles, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
 function HomeContent() {
@@ -13,23 +14,23 @@ function HomeContent() {
   const searchParams = useSearchParams()
   const view = searchParams.get('view') || 'active'
   const [refreshKey, setRefreshKey] = useState(0)
-  const [userEmail, setUserEmail] = useState<string | null>(null)
+  const [user, setUser] = useState<any>(null)
+  const [showSplash, setShowSplash] = useState(true)
+  const [authChecked, setAuthChecked] = useState(false)
 
   useEffect(() => {
     const checkUser = async () => {
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        router.push('/login')
-      } else {
-        setUserEmail(user.email || null)
-      }
+      setUser(user)
+      setAuthChecked(true)
     }
     checkUser()
-  }, [router])
+  }, [])
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
-    router.push('/login')
+    setUser(null)
+    router.push('/')
   }
 
   const handleLinkAdded = () => {
@@ -52,6 +53,40 @@ function HomeContent() {
     )
   }
 
+  if (showSplash) {
+    return <SplashScreen onFinish={() => setShowSplash(false)} />
+  }
+
+  // Landing Page (Not logged in)
+  if (authChecked && !user) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6 animate-in fade-in duration-500">
+        <div className="flex-1 flex flex-col items-center justify-center text-center">
+          <div className="w-24 h-24 bg-toss-blue/10 rounded-3xl flex items-center justify-center mb-8">
+            <Sparkles className="w-12 h-12 text-toss-blue" />
+          </div>
+          <h1 className="text-3xl font-bold text-toss-grey-900 mb-4">
+            링크 정리가<br />쉬워집니다
+          </h1>
+          <p className="text-toss-grey-600 leading-relaxed">
+            복잡한 링크들, AI가 알아서 분류해드려요.<br />
+            지금 바로 시작해보세요.
+          </p>
+        </div>
+        <div className="w-full max-w-md mb-8">
+          <button
+            onClick={() => router.push('/login')}
+            className="w-full bg-toss-blue hover:bg-blue-600 text-white font-bold py-4 rounded-2xl text-lg transition-colors flex items-center justify-center gap-2"
+          >
+            시작하기
+            <ArrowRight className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  // Main App (Logged in)
   return (
     <div className="min-h-screen bg-toss-grey-50 pb-24">
       {/* Header */}

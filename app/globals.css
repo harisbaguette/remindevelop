@@ -28,4 +28,17 @@ body {
   .toss-input {
     @apply w-full bg-toss-grey-100 text-toss-grey-900 px-4 py-4 rounded-toss-sm border border-transparent focus:bg-white focus:border-toss-blue outline-none transition-all placeholder:text-toss-grey-400 font-medium;
   }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }
