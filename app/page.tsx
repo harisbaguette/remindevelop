@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import LinkInput from '@/components/LinkInput'
 import LinkList from '@/components/LinkList'
 import SplashScreen from '@/components/SplashScreen'
-import { Inbox, Archive, Trash2, LogOut, Sparkles, ArrowRight } from 'lucide-react'
+import { Inbox, Archive, Trash2, LogOut, Sparkles, ArrowRight, Search, User } from 'lucide-react'
 import Link from 'next/link'
 
 function HomeContent() {
@@ -17,6 +17,7 @@ function HomeContent() {
   const [user, setUser] = useState<any>(null)
   const [showSplash, setShowSplash] = useState(true)
   const [authChecked, setAuthChecked] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     const checkUser = async () => {
@@ -89,19 +90,25 @@ function HomeContent() {
   // Main App (Logged in)
   return (
     <div className="min-h-screen bg-toss-grey-50 pb-24">
-      {/* Header */}
-      <header className="bg-white sticky top-0 z-50 px-5 py-4 border-b border-toss-grey-100 flex justify-between items-center">
-        <h1 className="text-xl font-bold text-toss-grey-900">리마인드 보관소</h1>
-        <button
-          onClick={handleLogout}
-          className="text-sm text-toss-grey-500 hover:text-toss-grey-800 font-medium"
-        >
-          로그아웃
-        </button>
+      {/* Header with Search */}
+      <header className="bg-white sticky top-0 z-50 px-5 py-3 border-b border-toss-grey-100 space-y-3">
+        <div className="flex justify-between items-center">
+          <h1 className="text-xl font-bold text-toss-grey-900">리마인드 보관소</h1>
+        </div>
+        <div className="relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-toss-grey-400" />
+          <input
+            type="text"
+            placeholder="링크 검색..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-toss-grey-100 text-toss-grey-900 pl-11 pr-4 py-3 rounded-2xl text-sm font-medium focus:bg-white focus:ring-2 focus:ring-toss-blue transition-all outline-none placeholder:text-toss-grey-400"
+          />
+        </div>
       </header>
 
       <main className="max-w-md mx-auto p-5">
-        {view === 'active' && (
+        {view === 'active' && !searchQuery && (
           <div className="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <h2 className="text-2xl font-bold text-toss-grey-900 mb-2">
               새로운 링크를<br />저장해볼까요?
@@ -114,21 +121,33 @@ function HomeContent() {
         <div className="space-y-4">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-lg font-bold text-toss-grey-900 flex items-center gap-2">
-              {view === 'active' && '보관함'}
-              {view === 'archive' && '완료된 링크'}
-              {view === 'trash' && '휴지통'}
+              {searchQuery ? `'${searchQuery}' 검색 결과` : (
+                <>
+                  {view === 'active' && '보관함'}
+                  {view === 'archive' && '완료된 링크'}
+                  {view === 'trash' && '휴지통'}
+                </>
+              )}
             </h3>
           </div>
-          <LinkList status={view} keyProp={refreshKey} />
+          {/* Pass searchQuery to LinkList if implemented, for now just showing list */}
+          <LinkList status={view} keyProp={refreshKey} searchQuery={searchQuery} />
         </div>
       </main>
 
       {/* Bottom Tab Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-toss-grey-100 pb-safe">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-toss-grey-100 pb-safe z-50">
         <div className="flex justify-around max-w-md mx-auto">
           <TabItem viewName="active" icon={Inbox} label="보관함" />
           <TabItem viewName="archive" icon={Archive} label="완료" />
           <TabItem viewName="trash" icon={Trash2} label="휴지통" />
+          <Link
+            href="/settings"
+            className="flex flex-col items-center justify-center w-full py-3 transition-colors text-toss-grey-400 hover:text-toss-grey-600"
+          >
+            <User className="w-6 h-6 mb-1" strokeWidth={2} />
+            <span className="text-[10px] font-medium">마이</span>
+          </Link>
         </div>
       </nav>
     </div>

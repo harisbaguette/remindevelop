@@ -13,7 +13,13 @@ type Link = {
     created_at: string
 }
 
-export default function LinkList({ status = 'active', keyProp }: { status?: string, keyProp?: number }) {
+interface LinkListProps {
+    status: string
+    keyProp: number
+    searchQuery?: string
+}
+
+export default function LinkList({ status, keyProp, searchQuery = '' }: LinkListProps) {
     const [links, setLinks] = useState<Link[]>([])
     const [loading, setLoading] = useState(true)
 
@@ -60,17 +66,34 @@ export default function LinkList({ status = 'active', keyProp }: { status?: stri
         }
     }
 
+    // Filter links based on search query
+    const filteredLinks = links.filter(link => {
+        if (!searchQuery) return true
+        const lowerQuery = searchQuery.toLowerCase()
+        return (
+            link.title?.toLowerCase().includes(lowerQuery) ||
+            link.description?.toLowerCase().includes(lowerQuery) ||
+            link.url?.toLowerCase().includes(lowerQuery) ||
+            link.category?.toLowerCase().includes(lowerQuery)
+        )
+    })
+
     if (loading) return <div className="text-center text-toss-grey-500 mt-10">링크 로딩 중...</div>
 
-    if (links.length === 0) {
+    if (filteredLinks.length === 0) {
         return (
             <div className="text-center py-20">
                 <div className="bg-toss-grey-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Archive className="w-8 h-8 text-toss-grey-400" />
                 </div>
-                <h3 className="text-xl font-bold text-toss-grey-800">링크가 없습니다</h3>
+                <h3 className="text-xl font-bold text-toss-grey-800">
+                    {searchQuery ? '검색 결과가 없습니다' : '링크가 없습니다'}
+                </h3>
                 <p className="text-toss-grey-500 mt-2">
-                    {status === 'active' ? '위의 URL을 붙여넣어 시작하세요!' : '이 목록은 비어 있습니다.'}
+                    {searchQuery
+                        ? '다른 검색어로 시도해보세요.'
+                        : (status === 'active' ? '위의 URL을 붙여넣어 시작하세요!' : '이 목록은 비어 있습니다.')
+                    }
                 </p>
             </div>
         )
@@ -78,8 +101,8 @@ export default function LinkList({ status = 'active', keyProp }: { status?: stri
 
     return (
         <div className="space-y-4">
-            {links.map((link) => (
-                <div key={link.id} className="toss-card flex flex-col gap-3">
+            {filteredLinks.map((link) => (
+                <div key={link.id} className="toss-card flex flex-col gap-3 group hover:border-toss-blue/30 transition-all duration-300">
                     <div className="flex justify-between items-start">
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
@@ -164,6 +187,11 @@ export default function LinkList({ status = 'active', keyProp }: { status?: stri
                                     </button>
                                 </>
                             )}
+                        </div>
+                        {/* Mobile fallback for opacity */}
+                        <div className="flex md:hidden items-center gap-1">
+                            {/* Duplicate buttons for mobile where hover doesn't exist - simplified for now, relying on group-hover for desktop */}
+                            {/* Actually, let's just make them always visible on mobile or use a menu. For now, let's remove opacity-0 for simplicity to ensure usability */}
                         </div>
                     </div>
                 </div>

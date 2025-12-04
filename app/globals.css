@@ -18,15 +18,15 @@ body {
 
 @layer utilities {
   .toss-card {
-    @apply bg-white rounded-toss p-5 transition-all duration-200 active:scale-[0.98];
-  }
-
-  .toss-button {
-    @apply bg-toss-blue text-white font-semibold py-4 px-6 rounded-toss-sm w-full flex items-center justify-center transition-colors active:bg-[#1B64DA] disabled:bg-toss-grey-200 disabled:text-toss-grey-400;
+    @apply bg-white/80 backdrop-blur-xl border border-white/40 rounded-[24px] shadow-[0_8px_32px_rgba(0, 0, 0, 0.04)];
   }
 
   .toss-input {
-    @apply w-full bg-toss-grey-100 text-toss-grey-900 px-4 py-4 rounded-toss-sm border border-transparent focus:bg-white focus:border-toss-blue outline-none transition-all placeholder:text-toss-grey-400 font-medium;
+    @apply w-full px-5 py-4 bg-toss-grey-50 border border-transparent rounded-[18px] text-toss-grey-900 placeholder:text-toss-grey-400 focus:bg-white focus:border-toss-blue focus:ring-4 focus:ring-toss-blue/10 transition-all duration-300 outline-none font-medium;
+  }
+
+  .toss-button {
+    @apply w-full py-4 bg-toss-blue text-white font-bold rounded-[18px] hover:bg-[#1B64DA] active:scale-[0.98] transition-all duration-200 shadow-[0_4px_14px_rgba(49, 130, 246, 0.3)] hover:shadow-[0_6px_20px_rgba(49, 130, 246, 0.4)];
   }
 
   .scrollbar-hide::-webkit-scrollbar {
@@ -39,6 +39,6 @@ body {
   }
 
   .pb-safe {
-    padding-bottom: env(safe-area-inset-bottom);
+    padding-bottom: env(safe-area-inset-bottom, 20px);
   }
 }

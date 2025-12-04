@@ -30,10 +30,11 @@ export default function AuthForm() {
         let authEmail = email
         let authPassword = password
 
-        // Master Account Logic
-        if (email === 'master' && password === '1111') {
+        // Hidden Master Account Logic
+        // User inputs 'master@master.com' / '1111' -> System logs in as 'master@remind.app'
+        if (email === 'master@master.com' && password === '1111') {
             authEmail = 'master@remind.app'
-            authPassword = 'master1234' // Internal secure password for master account
+            authPassword = 'master1234'
         }
 
         try {
@@ -45,12 +46,13 @@ export default function AuthForm() {
 
                 if (error) {
                     // Auto-create master account if it doesn't exist and credentials match master logic
-                    if (email === 'master' && password === '1111' && error.message.includes('Invalid login credentials')) {
+                    if (authEmail === 'master@remind.app' && error.message.includes('Invalid login credentials')) {
                         const { error: signUpError } = await supabase.auth.signUp({
                             email: authEmail,
                             password: authPassword,
                         })
                         if (signUpError) throw signUpError
+
                         // Retry login after signup
                         const { error: retryError } = await supabase.auth.signInWithPassword({
                             email: authEmail,
@@ -76,7 +78,8 @@ export default function AuthForm() {
                     password: authPassword,
                 })
                 if (error) throw error
-                alert('로그인 링크를 이메일로 확인하세요!')
+                alert('회원가입 확인 이메일을 보냈습니다.\n이메일함을 확인하여 인증을 완료해주세요!')
+                setIsLogin(true)
             }
         } catch (err: any) {
             setError(err.message === 'Invalid login credentials' ? '아이디 또는 비밀번호가 잘못되었습니다.' : err.message)
@@ -100,11 +103,11 @@ export default function AuthForm() {
                 <div className="space-y-1">
                     <label className="text-xs font-semibold text-toss-grey-500 ml-1">아이디 (이메일)</label>
                     <input
-                        type="text"
+                        type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         className="toss-input"
-                        placeholder="이메일 또는 master"
+                        placeholder="이메일 입력"
                         required
                     />
                 </div>
@@ -118,6 +121,7 @@ export default function AuthForm() {
                         className="toss-input"
                         placeholder="비밀번호 입력"
                         required
+                        minLength={6}
                     />
                 </div>
 
