@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기본 패턴 - 디자인 시스템</title>
+    
+    <link rel="stylesheet" href="krds.css">
+    <style>
+        
+        body {
+            background: var(--color-gray-50);
+        }
+
+        .ds-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-6);
+        }
+
+        .ds-header {
+            background: white;
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-8);
+            margin-bottom: var(--spacing-6);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .ds-title {
+            font-size: 40px;
+            font-weight: var(--font-weight-bold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .ds-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--color-gray-600);
+            margin-bottom: var(--spacing-6);
+        }
+
+        .ds-actions {
+            display: flex;
+            gap: var(--spacing-3);
+        }
+
+        /* 네비게이션 스타일 */
+        .ds-nav {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-xl);
+            margin-bottom: var(--spacing-6);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .nav-container {
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .nav-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-4) var(--spacing-5);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: var(--font-weight-medium);
+            font-size: var(--font-size-sm);
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+            transition: all var(--transition-base);
+        }
+
+        .nav-item:hover {
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+        }
+
+        .nav-item.active {
+            color: var(--color-primary-600);
+            border-bottom-color: var(--color-primary-600);
+            background: var(--color-primary-50);
+        }
+
+        .section {
+            background: white;
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-8);
+            margin-bottom: var(--spacing-6);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .section-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-6);
+            padding-bottom: var(--spacing-3);
+            border-bottom: 2px solid var(--color-primary-600);
+        }
+
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: var(--spacing-6);
+        }
+
+        .pattern-item {
+            padding: var(--spacing-6);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+        }
+
+        .pattern-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .pattern-demo {
+            margin-bottom: var(--spacing-4);
+        }
+
+        .pattern-description {
+            font-size: var(--font-size-sm);
+            color: var(--color-gray-600);
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-4);
+        }
+
+        .form-label {
+            display: block;
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-2);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: var(--spacing-3);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            transition: all var(--transition-base);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--color-primary-500);
+            box-shadow: 0 0 0 3px var(--color-primary-50);
+        }
+
+        .form-input.error {
+            border-color: var(--color-error-500);
+        }
+
+        .form-input.error:focus {
+            box-shadow: 0 0 0 3px var(--color-error-50);
+        }
+
+        .form-error {
+            font-size: var(--font-size-xs);
+            color: var(--color-error-500);
+            margin-top: var(--spacing-1);
+        }
+
+        .form-help {
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
+            margin-top: var(--spacing-1);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .checkbox-label {
+            font-size: var(--font-size-sm);
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        .file-upload {
+            border: 2px dashed var(--border-default);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-6);
+            text-align: center;
+            background: var(--bg-secondary);
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .file-upload:hover {
+            border-color: var(--color-primary-500);
+            background: var(--color-primary-50);
+        }
+
+        .file-upload-icon {
+            font-size: 32px;
+            color: var(--text-tertiary);
+            margin-bottom: var(--spacing-2);
+        }
+
+        .file-upload-text {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-1);
+        }
+
+        .file-upload-hint {
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: var(--spacing-3);
+            align-items: center;
+            padding: var(--spacing-4);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .filter-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .filter-label {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .sort-controls {
+            display: flex;
+            gap: var(--spacing-2);
+            align-items: center;
+        }
+
+        .sort-button {
+            padding: var(--spacing-2) var(--spacing-3);
+            border: 1px solid var(--border-default);
+            background: var(--bg-primary);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .sort-button:hover {
+            background: var(--bg-secondary);
+        }
+
+        .sort-button.active {
+            background: var(--color-primary-600);
+            color: white;
+            border-color: var(--color-primary-600);
+        }
+
+        .feedback-item {
+            padding: var(--spacing-4);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .feedback-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-2);
+        }
+
+        .feedback-user {
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+        }
+
+        .feedback-time {
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
+        }
+
+        .feedback-content {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .error-message {
+            padding: var(--spacing-4);
+            background: var(--color-error-50);
+            border: 1px solid var(--color-error-200);
+            border-radius: var(--radius-lg);
+            color: var(--color-error-700);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .error-title {
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-2);
+        }
+
+        .error-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .error-list li {
+            margin-bottom: var(--spacing-1);
+            padding-left: var(--spacing-4);
+            position: relative;
+        }
+
+        .error-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--color-error-500);
+        }
+
+        .success-message {
+            padding: var(--spacing-4);
+            background: var(--color-success-50);
+            border: 1px solid var(--color-success-200);
+            border-radius: var(--radius-lg);
+            color: var(--color-success-700);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .agreement-section {
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-4);
+            background: var(--bg-secondary);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .agreement-title {
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-2);
+        }
+
+        .agreement-content {
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+            line-height: 1.5;
+            max-height: 100px;
+            overflow-y: auto;
+            margin-bottom: var(--spacing-3);
+        }
+
+        .agreement-checkbox {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .agreement-checkbox input[type="checkbox"] {
+            margin: 0;
+        }
+
+        .agreement-checkbox label {
+            font-size: var(--font-size-sm);
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="toast"></div>
+
+    <div class="ds-container">
+        <!-- 헤더 -->
+        <div class="ds-header">
+            <h1 class="ds-title">기본 패턴</h1>
+            <p class="ds-subtitle">
+                자주 사용되는 UI 패턴으로 일관된 사용자 경험을 제공합니다
+            </p>
+            <div class="ds-actions">
+            </div>
+        </div>
+
+        <!-- 네비게이션 -->
+        <nav class="ds-nav">
+            <div class="nav-container">
+                <a href="index.html" class="nav-item">개요</a>
+                <a href="colors.html" class="nav-item">색상</a>
+                <a href="typography.html" class="nav-item">타이포그래피</a>
+                <a href="shapes.html" class="nav-item">형태</a>
+                <a href="layout.html" class="nav-item">레이아웃</a>
+                <a href="icons.html" class="nav-item">아이콘</a>
+                <a href="elevation.html" class="nav-item">엘리베이션</a>
+                <a href="components.html" class="nav-item">컴포넌트</a>
+                <a href="patterns.html" class="nav-item active">기본 패턴</a>
+                <a href="services.html" class="nav-item">서비스 패턴</a>
+            </div>
+        </nav>
+
+        <!-- 개인 식별 정보 입력 -->
+        <section class="section">
+            <h2 class="section-title">개인 식별 정보 입력</h2>
+            
+            <div class="pattern-grid">
+                <div class="pattern-item">
+                    <div class="pattern-title">기본 정보 입력</div>
+                    <div class="pattern-demo">
+                        <div class="form-group">
+                            <label class="form-label">이름 *</label>
+                            <input type="text" class="form-input" placeholder="이름을 입력하세요">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">이메일 *</label>
+                            <input type="email" class="form-input" placeholder="이메일을 입력하세요">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">전화번호</label>
+                            <input type="tel" class="form-input" placeholder="010-1234-5678">
+                            <div class="form-help">하이픈(-) 없이 입력해도 됩니다.</div>
+                        </div>
+                    </div>
+                    <div class="pattern-description">
+                        사용자의 기본 개인정보를 입력받는 폼 패턴입니다.
+                    </div>
+                </div>
+
+                <div class="pattern-item">
+                    <div class="pattern-title">주소 입력</div>
+                    <div class="pattern-demo">
+                        <div class="form-group">
+                            <label class="form-label">우편번호 *</label>
+                            <div style="display: flex; gap: var(--spacing-2);">
+                                <input type="text" class="form-input" placeholder="12345" style="flex: 1;">
+                                <button class="btn btn-outline">검색</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">기본주소 *</label>
+                            <input type="text" class="form-input" placeholder="서울시 강남구 테헤란로 123">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">상세주소</label>
+                            <input type="text" class="form-input" placeholder="아파트명, 동/호수 등">
+                        </div>
+                    </div>
+                    <div class="pattern-description">
+                        주소 검색과 상세주소 입력을 포함한 주소 입력 패턴입니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 입력폼 -->
+        <section class="section">
+            <h2 class="section-title">입력폼</h2>
+            
+            <div class="pattern-grid">
+                <div class="pattern-item">
+                    <div class="pattern-title">기본 입력폼</div>
+                    <div class="pattern-demo">
+                        <div class="form-group">
+                            <label class="form-label">제목 *</label>
+                            <input type="text" class="form-input" placeholder="제목을 입력하세요">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">내용 *</label>
+                            <textarea class="form-input" rows="4" placeholder="내용을 입력하세요"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">카테고리</label>
+                            <select class="form-input">
+                                <option>선택하세요</option>
+                                <option>일반</option>
+                                <option>공지</option>
+                                <option>이벤트</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="pattern-description">
+                        기본적인 텍스트 입력과 선택을 포함한 폼 패턴입니다.
+                    </div>
+                </div>
+
+                <div class="pattern-item">
+                    <div class="pattern-title">오류 상태 폼</div>
+                    <div class="pattern-demo">
+                        <div class="form-group">
+                            <label class="form-label">이메일 *</label>
+                            <input type="email" class="form-input error" placeholder="잘못된 이메일 형식">
+                            <div class="form-error">올바른 이메일 형식을 입력해주세요.</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">비밀번호 *</label>
+                            <input type="password" class="form-input error" placeholder="비밀번호">
+                            <div class="form-error">비밀번호는 8자 이상이어야 합니다.</div>
+                        </div>
+                    </div>
+                    <div class="pattern-description">
+                        입력 오류가 발생했을 때의 폼 상태를 보여줍니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 첨부파일 -->
+        <section class="section">
+            <h2 class="section-title">첨부파일</h2>
+            
+            <div class="pattern-grid">
+                <div class="pattern-item">
+                    <div class="pattern-title">파일 업로드</div>
+                    <div class="pattern-demo">
+                        <div class="file-upload">
+                            <div class="file-upload-icon">📁</div>
+                            <div class="file-upload-text">파일을 드래그하거나 클릭하여 업로드</div>
+                            <div class="file-upload-hint">최대 10MB, JPG, PNG, PDF 파일만 가능</div>
+                        </div>
+                    </div>
+                    <div class="pattern-description">
+                        드래그 앤 드롭과 클릭을 통한 파일 업로드 패턴입니다.
+                    </div>
+                </div>
+
+                <div class="pattern-item">
+                    <div class="pattern-title">파일 목록</div>
+                    <div class="pattern-demo">
+                        <div style="display: flex; flex-direction: column; gap: var(--spacing-2);">
+                            <div style="display: flex; align-items: center; justify-content: space-between; padding: var(--spacing-3); background: var(--bg-secondary); border-radius: var(--radius-md);">
+                                <div style="display: flex; align-items: center; gap: var(--spacing-2);">
+                                    <span>📄</span>
+                                    <span style="font-size: var(--font-size-sm);">document.pdf</span>
+                                </div>
+                                <button class="btn btn-ghost btn-sm">삭제</button>
+                            </div>
+                            <div style="display: flex; align-items: center; justify-content: space-between; padding: var(--spacing-3); background: var(--bg-secondary); border-radius: var(--radius-md);">
+                                <div style="display: flex; align-items: center; gap: var(--spacing-2);">
+                                    <span>🖼️</span>
+                                    <span style="font-size: var(--font-size-sm);">image.jpg</span>
+                                </div>
+                                <button class="btn btn-ghost btn-sm">삭제</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pattern-description">
+                        업로드된 파일들의 목록과 관리 기능을 제공합니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 동의 -->
+        <section class="section">
+            <h2 class="section-title">동의</h2>
+            
+            <div class="pattern-grid">
+                <div class="pattern-item">
+                    <div class="pattern-title">약관 동의</div>
+                    <div class="pattern-demo">
+                        <div class="agreement-section">
+                            <div class="agreement-title">서비스 이용약관</div>
+                            <div class="agreement-content">
+                                제1조 (목적) 이 약관은 회사가 제공하는 서비스의 이용과 관련하여 회사와 이용자 간의 권리, 의무 및 책임사항을 규정함을 목적으로 합니다.
+                                제2조 (정의) 이 약관에서 사용하는 용어의 정의는 다음과 같습니다.
+                                1. "서비스"란 회사가 제공하는 모든 서비스를 의미합니다.
+                                2. "이용자"란 서비스에 접속하여 이 약관에 따라 서비스를 이용하는 회원 및 비회원을 의미합니다.
+                            </div>
+                            <div class="agreement-checkbox">
+                                <input type="checkbox" id="terms">
+                                <label for="terms">서비스 이용약관에 동의합니다. (필수)</label>
+                            </div>
+                        </div>
+                        <div class="agreement-section">
+                            <div class="agreement-title">개인정보 처리방침</div>
+                            <div class="agreement-content">
+                                개인정보 처리방침 내용이 여기에 표시됩니다...
+                            </div>
+                            <div class="agreement-checkbox">
+                                <input type="checkbox" id="privacy">
+                                <label for="privacy">개인정보 처리방침에 동의합니다. (필수)</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pattern-description">
+                        서비스 이용을 위한 필수 약관 동의 패턴입니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 필터링/정렬 -->
+        <section class="section">
+            <h2 class="section-title">필터링/정렬</h2>
+            
+            <div class="pattern-grid">
+                <div class="pattern-item">
+                    <div class="pattern-title">필터 바</div>
+                    <div class="pattern-demo">
+                        <div class="filter-bar">
+                            <div class="filter-item">
+                                <span class="filter-label">카테고리:</span>
+                                <select class="form-input" style="width: auto; min-width: 120px;">
+                                    <option>전체</option>
+                                    <option>일반</option>
+                                    <option>공지</option>
+                                    <option>이벤트</option>
+                                </select>
+                            </div>
+                            <div class="filter-item">
+                                <span class="filter-label">상태:</span>
+                                <select class="form-input" style="width: auto; min-width: 100px;">
+                                    <option>전체</option>
+                                    <option>진행중</option>
+                                    <option>완료</option>
+                                </select>
+                            </div>
+                            <div class="filter-item">
+                                <span class="filter-label">날짜:</span>
+                                <input type="date" class="form-input" style="width: auto;">
+                            </div>
+                            <button class="btn btn-primary btn-sm">적용</button>
+                        </div>
+                    </div>
+                    <div class="pattern-description">
+                        다양한 조건으로 데이터를 필터링할 수 있는 패턴입니다.
+                    </div>
+                </div>
+
+                <div class="pattern-item">
+                    <div class="pattern-title">정렬 컨트롤</div>
+                    <div class="pattern-demo">
+                        <div class="sort-controls">
+                            <span style="font-size: var(--font-size-sm); color: var(--text-secondary);">정렬:</span>
+                            <button class="sort-button active">최신순</button>
+                            <button class="sort-button">인기순</button>
+                            <button class="sort-button">이름순</button>
+                            <button class="sort-button">날짜순</button>
+                        </div>
+                    </div>
+                    <div class="pattern-description">
+                        데이터를 다양한 기준으로 정렬할 수 있는 패턴입니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 사용자 피드백 -->
+        <section class="section">
+            <h2 class="section-title">사용자 피드백</h2>
+            
+            <div class="pattern-grid">
+                <div class="pattern-item">
+                    <div class="pattern-title">피드백 목록</div>
+                    <div class="pattern-demo">
+                        <div class="feedback-item">
+                            <div class="feedback-header">
+                                <span class="feedback-user">김철수</span>
+                                <span class="feedback-time">2시간 전</span>
+                            </div>
+                            <div class="feedback-content">
+                                좋은 서비스입니다. 다만 모바일에서 사용할 때 버튼이 너무 작아서 불편합니다.
+                            </div>
+                        </div>
+                        <div class="feedback-item">
+                            <div class="feedback-header">
+                                <span class="feedback-user">이영희</span>
+                                <span class="feedback-time">1일 전</span>
+                            </div>
+                            <div class="feedback-content">
+                                빠른 응답과 친절한 서비스에 감사합니다.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pattern-description">
+                        사용자들의 피드백을 시간순으로 표시하는 패턴입니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 오류 -->
+        <section class="section">
+            <h2 class="section-title">오류</h2>
+            
+            <div class="pattern-grid">
+                <div class="pattern-item">
+                    <div class="pattern-title">오류 메시지</div>
+                    <div class="pattern-demo">
+                        <div class="error-message">
+                            <div class="error-title">다음 오류가 발생했습니다:</div>
+                            <ul class="error-list">
+                                <li>이메일 형식이 올바르지 않습니다.</li>
+                                <li>비밀번호는 8자 이상이어야 합니다.</li>
+                                <li>필수 항목을 모두 입력해주세요.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="pattern-description">
+                        여러 오류를 한 번에 표시하는 패턴입니다.
+                    </div>
+                </div>
+
+                <div class="pattern-item">
+                    <div class="pattern-title">성공 메시지</div>
+                    <div class="pattern-demo">
+                        <div class="success-message">
+                            ✅ 작업이 성공적으로 완료되었습니다. 변경사항이 저장되었습니다.
+                        </div>
+                    </div>
+                    <div class="pattern-description">
+                        성공적인 작업 완료를 알리는 패턴입니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 확인 -->
+        <section class="section">
+            <h2 class="section-title">확인</h2>
+            
+            <div class="pattern-grid">
+                <div class="pattern-item">
+                    <div class="pattern-title">확인 대화상자</div>
+                    <div class="pattern-demo">
+                        <div style="padding: var(--spacing-4); border: 1px solid var(--border-default); border-radius: var(--radius-lg); background: var(--bg-primary);">
+                            <div style="font-size: var(--font-size-lg); font-weight: var(--font-weight-semibold); color: var(--text-primary); margin-bottom: var(--spacing-3);">
+                                정말로 삭제하시겠습니까?
+                            </div>
+                            <div style="font-size: var(--font-size-sm); color: var(--text-secondary); margin-bottom: var(--spacing-4);">
+                                삭제된 데이터는 복구할 수 없습니다.
+                            </div>
+                            <div style="display: flex; gap: var(--spacing-3); justify-content: flex-end;">
+                                <button class="btn btn-outline">취소</button>
+                                <button class="btn btn-danger">삭제</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pattern-description">
+                        중요한 작업 전 사용자 확인을 받는 패턴입니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="../assets/js/app.js"></script>
+    <script>
+    </script>
+</body>
+</html>

@@ -1,171 +1,173 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import { useRouter } from 'next/navigation'
 import { Loader2 } from 'lucide-react'
 
 export default function AuthForm() {
+    const [view, setView] = useState<'login' | 'signup' | 'reset'>('login')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
-    const [isLogin, setIsLogin] = useState(true)
-    const [saveId, setSaveId] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const router = useRouter()
-
-    useEffect(() => {
-        const savedEmail = localStorage.getItem('savedEmail')
-        if (savedEmail) {
-            setEmail(savedEmail)
-            setSaveId(true)
-        }
-    }, [])
 
     const handleAuth = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
         setError(null)
 
-        let authEmail = email
-        let authPassword = password
-
-        // Hidden Master Account Logic
-        // User inputs 'master@master.com' / '1111' -> System logs in as 'master@remind.app'
-        if (email === 'master@master.com' && password === '1111') {
-            authEmail = 'master@remind.app'
-            authPassword = 'master1234'
-        }
-
         try {
-            if (isLogin) {
+            if (view === 'login') {
                 const { error } = await supabase.auth.signInWithPassword({
-                    email: authEmail,
-                    password: authPassword,
-                })
-
-                if (error) {
-                    // Auto-create master account if it doesn't exist and credentials match master logic
-                    if (authEmail === 'master@remind.app' && error.message.includes('Invalid login credentials')) {
-                        const { error: signUpError } = await supabase.auth.signUp({
-                            email: authEmail,
-                            password: authPassword,
-                        })
-                        if (signUpError) throw signUpError
-
-                        // Retry login after signup
-                        const { error: retryError } = await supabase.auth.signInWithPassword({
-                            email: authEmail,
-                            password: authPassword,
-                        })
-                        if (retryError) throw retryError
-                    } else {
-                        throw error
-                    }
-                }
-
-                // Handle Save ID
-                if (saveId) {
-                    localStorage.setItem('savedEmail', email)
-                } else {
-                    localStorage.removeItem('savedEmail')
-                }
-
-                router.push('/')
-            } else {
-                const { error } = await supabase.auth.signUp({
-                    email: authEmail,
-                    password: authPassword,
+                    email,
+                    password,
                 })
                 if (error) throw error
-                alert('회원가입 확인 이메일을 보냈습니다.\n이메일함을 확인하여 인증을 완료해주세요!')
-                setIsLogin(true)
+                router.push('/')
+                router.refresh()
+            } else if (view === 'signup') {
+                const { error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                })
+                if (error) throw error
+                alert('회원가입이 완료되었습니다. 이메일을 확인해주세요.')
+                setView('login')
+            } else if (view === 'reset') {
+                const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                    redirectTo: `${window.location.origin}/auth/update-password`,
+                })
+                if (error) throw error
+                alert('비밀번호 재설정 링크를 이메일로 보냈습니다.')
+                setView('login')
             }
-        } catch (err: any) {
-            setError(err.message === 'Invalid login credentials' ? '아이디 또는 비밀번호가 잘못되었습니다.' : err.message)
+        } catch (error: any) {
+            setError(error.message)
         } finally {
             setLoading(false)
         }
     }
 
+    const handleGoogleLogin = async () => {
+        setLoading(true)
+        try {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: `${window.location.origin}/auth/callback`,
+                },
+            })
+            if (error) throw error
+        } catch (error: any) {
+            setError(error.message)
+            setLoading(false)
+        }
+    }
+
     return (
-        <div className="w-full max-w-md p-8 bg-white rounded-3xl shadow-xl shadow-toss-grey-200/50 animate-in fade-in zoom-in duration-500">
-            <div className="text-center mb-8">
-                <h1 className="text-2xl font-bold text-toss-grey-900 mb-2">
-                    {isLogin ? '반가워요 👋' : '회원가입'}
+        <div className="w-full max-w-[400px] mx-auto px-6 flex flex-col min-h-screen justify-center pb-20 animate-in fade-in duration-700">
+            {/* Header Section: Logo & Title */}
+            <div className="flex flex-col items-center mb-12">
+                <div className="w-20 h-20 mb-6">
+                    <img src="/logo.png" alt="Logo" className="w-full h-full object-contain drop-shadow-sm" />
+                </div>
+                <h1 className="text-[30px] font-bold text-toss-grey-900 tracking-tight">
+                    {view === 'login' && '로그인'}
+                    {view === 'signup' && '회원가입'}
+                    {view === 'reset' && '비밀번호 찾기'}
                 </h1>
-                <p className="text-toss-grey-500 text-sm">
-                    {isLogin ? '서비스 이용을 위해 로그인해주세요' : '이메일로 간편하게 가입하세요'}
-                </p>
             </div>
 
-            <form onSubmit={handleAuth} className="space-y-4">
-                <div className="space-y-1">
-                    <label className="text-xs font-semibold text-toss-grey-500 ml-1">아이디 (이메일)</label>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="toss-input"
-                        placeholder="이메일 입력"
-                        required
-                    />
-                </div>
+            {/* Input Section */}
+            <div className="space-y-6">
+                {/* Google Login - Only show in Login/Signup */}
+                {view !== 'reset' && (
+                    <>
+                        <button
+                            onClick={handleGoogleLogin}
+                            disabled={loading}
+                            className="w-full py-4 bg-[#F2F4F6] text-[#191F28] font-semibold rounded-[18px] hover:bg-[#E5E8EB] transition-colors flex items-center justify-center gap-2.5 relative active:scale-[0.98]"
+                        >
+                            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
+                            Google로 계속하기
+                        </button>
 
-                <div className="space-y-1">
-                    <label className="text-xs font-semibold text-toss-grey-500 ml-1">비밀번호</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="toss-input"
-                        placeholder="비밀번호 입력"
-                        required
-                        minLength={6}
-                    />
-                </div>
+                        <div className="relative py-2 flex justify-center items-center">
+                            <div className="w-full h-[1px] bg-toss-grey-100 absolute"></div>
+                            <span className="text-[13px] text-toss-grey-400 bg-white px-3 relative z-10 font-medium">또는</span>
+                        </div>
+                    </>
+                )}
 
-                {isLogin && (
-                    <div className="flex items-center ml-1">
+                {/* Email Form */}
+                <form onSubmit={handleAuth} className="space-y-4">
+                    <div className="space-y-3">
                         <input
-                            type="checkbox"
-                            id="saveId"
-                            checked={saveId}
-                            onChange={(e) => setSaveId(e.target.checked)}
-                            className="w-4 h-4 rounded border-toss-grey-300 text-toss-blue focus:ring-toss-blue"
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="이메일"
+                            className="w-full px-5 py-4 bg-toss-grey-50 border border-transparent focus:bg-white focus:border-toss-blue rounded-[18px] text-[17px] outline-none transition-all placeholder:text-toss-grey-400"
+                            required
+                            disabled={loading}
                         />
-                        <label htmlFor="saveId" className="ml-2 text-sm text-toss-grey-600 cursor-pointer">
-                            아이디 저장
-                        </label>
+                        {view !== 'reset' && (
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="비밀번호"
+                                className="w-full px-5 py-4 bg-toss-grey-50 border border-transparent focus:bg-white focus:border-toss-blue rounded-[18px] text-[17px] outline-none transition-all placeholder:text-toss-grey-400"
+                                required
+                                disabled={loading}
+                            />
+                        )}
                     </div>
-                )}
 
-                {error && (
-                    <div className="p-3 rounded-xl bg-red-50 text-red-500 text-sm text-center font-medium animate-in fade-in slide-in-from-top-1">
-                        {error}
-                    </div>
-                )}
-
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className="toss-button w-full mt-4"
-                >
-                    {loading ? (
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                    ) : (
-                        isLogin ? '로그인' : '동의하고 회원가입'
+                    {error && (
+                        <div className="text-toss-red text-sm font-medium text-center bg-toss-red-light py-3 rounded-[14px]">
+                            {error}
+                        </div>
                     )}
-                </button>
-            </form>
 
-            <div className="mt-6 text-center">
-                <button
-                    onClick={() => setIsLogin(!isLogin)}
-                    className="text-sm text-toss-grey-500 hover:text-toss-grey-800 transition-colors underline underline-offset-4"
-                >
-                    {isLogin ? "계정이 없으신가요? 회원가입" : '이미 계정이 있으신가요? 로그인'}
-                </button>
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full py-4 bg-toss-blue text-white font-bold rounded-[18px] text-[17px] hover:bg-toss-blue-dark transition-all active:scale-[0.98] shadow-lg shadow-toss-blue/20"
+                    >
+                        {loading ? (
+                            <Loader2 className="w-6 h-6 animate-spin mx-auto" />
+                        ) : (
+                            view === 'login' ? '로그인' : (view === 'signup' ? '동의하고 회원가입' : '재설정 메일 보내기')
+                        )}
+                    </button>
+                </form>
+
+                {/* Toggle Links */}
+                <div className="text-center pt-2 space-y-2 flex flex-col items-center">
+                    {view === 'login' && (
+                        <>
+                            <button onClick={() => setView('signup')} className="text-[14px] text-toss-grey-500 hover:text-toss-grey-800 transition-colors font-medium">
+                                계정이 없으신가요? 회원가입
+                            </button>
+                            <button onClick={() => setView('reset')} className="text-[13px] text-toss-grey-400 hover:text-toss-grey-600 transition-colors">
+                                비밀번호를 잊으셨나요?
+                            </button>
+                        </>
+                    )}
+                    {view === 'signup' && (
+                        <button onClick={() => setView('login')} className="text-[14px] text-toss-grey-500 hover:text-toss-grey-800 transition-colors font-medium">
+                            이미 계정이 있으신가요? 로그인
+                        </button>
+                    )}
+                    {view === 'reset' && (
+                        <button onClick={() => setView('login')} className="text-[14px] text-toss-grey-500 hover:text-toss-grey-800 transition-colors font-medium">
+                            로그인으로 돌아가기
+                        </button>
+                    )}
+                </div>
             </div>
         </div>
     )

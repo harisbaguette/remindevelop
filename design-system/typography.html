@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>타이포그래피 - 디자인 시스템</title>
+    
+    <link rel="stylesheet" href="krds.css">
+    <style>
+        
+        body {
+            background: var(--color-gray-50);
+        }
+
+        .ds-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-6);
+        }
+
+        .ds-header {
+            background: white;
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-8);
+            margin-bottom: var(--spacing-6);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .ds-title {
+            font-size: 40px;
+            font-weight: var(--font-weight-bold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .ds-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--color-gray-600);
+            margin-bottom: var(--spacing-6);
+        }
+
+        .ds-actions {
+            display: flex;
+            gap: var(--spacing-3);
+        }
+
+        /* 네비게이션 스타일 */
+        .ds-nav {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-xl);
+            margin-bottom: var(--spacing-6);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .nav-container {
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .nav-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-4) var(--spacing-5);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: var(--font-weight-medium);
+            font-size: var(--font-size-sm);
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+            transition: all var(--transition-base);
+        }
+
+        .nav-item:hover {
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+        }
+
+        .nav-item.active {
+            color: var(--color-primary-600);
+            border-bottom-color: var(--color-primary-600);
+            background: var(--color-primary-50);
+        }
+
+        .section {
+            background: white;
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-8);
+            margin-bottom: var(--spacing-6);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .section-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-6);
+            padding-bottom: var(--spacing-3);
+            border-bottom: 2px solid var(--color-primary-600);
+        }
+
+        .typography-demo {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-6);
+        }
+
+        .type-sample {
+            padding: var(--spacing-4);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+        }
+
+        .type-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-2);
+        }
+
+        .type-label {
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-gray-600);
+        }
+
+        .type-specs {
+            font-size: var(--font-size-xs);
+            color: var(--color-gray-500);
+            font-family: monospace;
+        }
+
+        .font-scale {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-4);
+        }
+
+        .scale-item {
+            text-align: center;
+            padding: var(--spacing-4);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+        }
+
+        .weight-demo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-4);
+        }
+
+        .weight-item {
+            text-align: center;
+            padding: var(--spacing-4);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+        }
+    </style>
+</head>
+<body>
+    <div id="toast"></div>
+
+    <div class="ds-container">
+        <!-- 헤더 -->
+        <div class="ds-header">
+            <h1 class="ds-title">타이포그래피</h1>
+            <p class="ds-subtitle">
+                일관된 텍스트 스타일로 가독성과 브랜드 아이덴티티를 확보합니다
+            </p>
+            <div class="ds-actions">
+            </div>
+        </div>
+
+        <!-- 네비게이션 -->
+        <nav class="ds-nav">
+            <div class="nav-container">
+                <a href="index.html" class="nav-item">개요</a>
+                <a href="colors.html" class="nav-item">색상</a>
+                <a href="typography.html" class="nav-item active">타이포그래피</a>
+                <a href="shapes.html" class="nav-item">형태</a>
+                <a href="layout.html" class="nav-item">레이아웃</a>
+                <a href="icons.html" class="nav-item">아이콘</a>
+                <a href="elevation.html" class="nav-item">엘리베이션</a>
+                <a href="components.html" class="nav-item">컴포넌트</a>
+                <a href="patterns.html" class="nav-item">기본 패턴</a>
+                <a href="services.html" class="nav-item">서비스 패턴</a>
+            </div>
+        </nav>
+
+        <!-- 서체 -->
+        <section class="section">
+            <h2 class="section-title">서체</h2>
+            
+            <div class="typography-demo">
+                <div class="type-sample">
+                    <div class="type-info">
+                        <span class="type-label">기본 서체</span>
+                        <span class="type-specs">Pretendard Variable, system-ui, sans-serif</span>
+                    </div>
+                    <div style="font-size: 24px; line-height: 1.5;">
+                        안녕하세요! 이것은 Pretendard 서체입니다. 한글과 영문이 조화롭게 표현됩니다.
+                        <br>Hello! This is Pretendard font. It harmoniously expresses Korean and English.
+                    </div>
+                </div>
+
+                <div class="type-sample">
+                    <div class="type-info">
+                        <span class="type-label">모노스페이스</span>
+                        <span class="type-specs">'Courier New', monospace</span>
+                    </div>
+                    <div style="font-family: 'Courier New', monospace; font-size: 16px; line-height: 1.5;">
+                        코드나 데이터를 표시할 때 사용하는 고정폭 서체입니다.
+                        <br>1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZ
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 글자 크기 스케일 -->
+        <section class="section">
+            <h2 class="section-title">글자 스케일</h2>
+            
+            <div class="font-scale">
+                <div class="scale-item">
+                    <div style="font-size: 12px; color: var(--color-gray-500); margin-bottom: 8px;">12px / 0.75rem</div>
+                    <div style="font-size: 12px; line-height: 1.5;">매우 작은 텍스트</div>
+                </div>
+                <div class="scale-item">
+                    <div style="font-size: 13px; color: var(--color-gray-500); margin-bottom: 8px;">13px / 0.8125rem</div>
+                    <div style="font-size: 13px; line-height: 1.5;">작은 텍스트</div>
+                </div>
+                <div class="scale-item">
+                    <div style="font-size: 14px; color: var(--color-gray-500); margin-bottom: 8px;">14px / 0.875rem</div>
+                    <div style="font-size: 14px; line-height: 1.5;">기본 텍스트</div>
+                </div>
+                <div class="scale-item">
+                    <div style="font-size: 15px; color: var(--color-gray-500); margin-bottom: 8px;">15px / 0.9375rem</div>
+                    <div style="font-size: 15px; line-height: 1.5;">중간 텍스트</div>
+                </div>
+                <div class="scale-item">
+                    <div style="font-size: 16px; color: var(--color-gray-500); margin-bottom: 8px;">16px / 1rem</div>
+                    <div style="font-size: 16px; line-height: 1.5;">큰 텍스트</div>
+                </div>
+                <div class="scale-item">
+                    <div style="font-size: 18px; color: var(--color-gray-500); margin-bottom: 8px;">18px / 1.125rem</div>
+                    <div style="font-size: 18px; line-height: 1.5;">더 큰 텍스트</div>
+                </div>
+                <div class="scale-item">
+                    <div style="font-size: 20px; color: var(--color-gray-500); margin-bottom: 8px;">20px / 1.25rem</div>
+                    <div style="font-size: 20px; line-height: 1.5;">제목 텍스트</div>
+                </div>
+                <div class="scale-item">
+                    <div style="font-size: 24px; color: var(--color-gray-500); margin-bottom: 8px;">24px / 1.5rem</div>
+                    <div style="font-size: 24px; line-height: 1.5;">큰 제목</div>
+                </div>
+                <div class="scale-item">
+                    <div style="font-size: 28px; color: var(--color-gray-500); margin-bottom: 8px;">28px / 1.75rem</div>
+                    <div style="font-size: 28px; line-height: 1.5;">매우 큰 제목</div>
+                </div>
+                <div class="scale-item">
+                    <div style="font-size: 32px; color: var(--color-gray-500); margin-bottom: 8px;">32px / 2rem</div>
+                    <div style="font-size: 32px; line-height: 1.5;">대형 제목</div>
+                </div>
+                <div class="scale-item">
+                    <div style="font-size: 40px; color: var(--color-gray-500); margin-bottom: 8px;">40px / 2.5rem</div>
+                    <div style="font-size: 40px; line-height: 1.5;">헤더 제목</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 글자 두께 -->
+        <section class="section">
+            <h2 class="section-title">글자 두께</h2>
+            
+            <div class="weight-demo">
+                <div class="weight-item">
+                    <div style="font-size: 14px; color: var(--color-gray-500); margin-bottom: 8px;">Regular (400)</div>
+                    <div style="font-weight: 400; font-size: 18px;">일반 텍스트</div>
+                </div>
+                <div class="weight-item">
+                    <div style="font-size: 14px; color: var(--color-gray-500); margin-bottom: 8px;">Medium (500)</div>
+                    <div style="font-weight: 500; font-size: 18px;">중간 굵기</div>
+                </div>
+                <div class="weight-item">
+                    <div style="font-size: 14px; color: var(--color-gray-500); margin-bottom: 8px;">Semibold (600)</div>
+                    <div style="font-weight: 600; font-size: 18px;">세미볼드</div>
+                </div>
+                <div class="weight-item">
+                    <div style="font-size: 14px; color: var(--color-gray-500); margin-bottom: 8px;">Bold (700)</div>
+                    <div style="font-weight: 700; font-size: 18px;">볼드 텍스트</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 줄 간격 -->
+        <section class="section">
+            <h2 class="section-title">줄 간격</h2>
+            
+            <div class="typography-demo">
+                <div class="type-sample">
+                    <div class="type-info">
+                        <span class="type-label">Tight (1.25)</span>
+                        <span class="type-specs">line-height: 1.25</span>
+                    </div>
+                    <div style="line-height: 1.25; font-size: 16px;">
+                        이것은 줄 간격이 좁은 텍스트입니다. 제목이나 짧은 문장에 적합합니다. 여러 줄의 텍스트가 있을 때 줄 사이의 간격이 좁아서 더 컴팩트하게 보입니다.
+                    </div>
+                </div>
+
+                <div class="type-sample">
+                    <div class="type-info">
+                        <span class="type-label">Normal (1.5)</span>
+                        <span class="type-specs">line-height: 1.5</span>
+                    </div>
+                    <div style="line-height: 1.5; font-size: 16px;">
+                        이것은 기본 줄 간격을 가진 텍스트입니다. 일반적인 본문 텍스트에 적합합니다. 여러 줄의 텍스트가 있을 때 적당한 간격으로 가독성이 좋습니다.
+                    </div>
+                </div>
+
+                <div class="type-sample">
+                    <div class="type-info">
+                        <span class="type-label">Relaxed (1.75)</span>
+                        <span class="type-specs">line-height: 1.75</span>
+                    </div>
+                    <div style="line-height: 1.75; font-size: 16px;">
+                        이것은 줄 간격이 넓은 텍스트입니다. 긴 문장이나 중요한 내용에 적합합니다. 여러 줄의 텍스트가 있을 때 여유로운 간격으로 더 편안하게 읽을 수 있습니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 계층 -->
+        <section class="section">
+            <h2 class="section-title">계층</h2>
+            
+            <div class="typography-demo">
+                <div class="type-sample">
+                    <h1 style="font-size: 40px; font-weight: 700; margin-bottom: 16px; color: var(--color-gray-900);">H1 - 페이지 제목</h1>
+                    <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 16px; color: var(--color-gray-900);">H2 - 섹션 제목</h2>
+                    <h3 style="font-size: 24px; font-weight: 600; margin-bottom: 16px; color: var(--color-gray-900);">H3 - 하위 섹션 제목</h3>
+                    <h4 style="font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--color-gray-900);">H4 - 소제목</h4>
+                    <h5 style="font-size: 18px; font-weight: 600; margin-bottom: 16px; color: var(--color-gray-900);">H5 - 작은 제목</h5>
+                    <h6 style="font-size: 16px; font-weight: 600; margin-bottom: 16px; color: var(--color-gray-900);">H6 - 가장 작은 제목</h6>
+                    <p style="font-size: 16px; line-height: 1.5; color: var(--color-gray-700); margin-bottom: 16px;">
+                        이것은 일반적인 본문 텍스트입니다. 가독성을 위해 적절한 크기와 줄 간격을 사용합니다.
+                    </p>
+                    <p style="font-size: 14px; line-height: 1.5; color: var(--color-gray-600);">
+                        이것은 작은 텍스트입니다. 부가 정보나 설명에 사용됩니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 글자 색상 (접근성) -->
+        <section class="section">
+            <h2 class="section-title">글자 색상 (접근성)</h2>
+            
+            <div class="typography-demo">
+                <div class="type-sample">
+                    <div class="type-info">
+                        <span class="type-label">주요 텍스트</span>
+                        <span class="type-specs">#171717 / #f8fafc (다크모드)</span>
+                    </div>
+                    <div style="color: var(--text-primary); font-size: 16px;">
+                        가장 중요한 텍스트는 높은 대비를 가진 색상을 사용합니다.
+                    </div>
+                </div>
+
+                <div class="type-sample">
+                    <div class="type-info">
+                        <span class="type-label">보조 텍스트</span>
+                        <span class="type-specs">#404040 / #e2e8f0 (다크모드)</span>
+                    </div>
+                    <div style="color: var(--text-secondary); font-size: 16px;">
+                        부가적인 정보는 중간 대비의 색상을 사용합니다.
+                    </div>
+                </div>
+
+                <div class="type-sample">
+                    <div class="type-info">
+                        <span class="type-label">보조 텍스트</span>
+                        <span class="type-specs">#737373 / #94a3b8 (다크모드)</span>
+                    </div>
+                    <div style="color: var(--text-tertiary); font-size: 16px;">
+                        덜 중요한 정보는 낮은 대비의 색상을 사용합니다.
+                    </div>
+                </div>
+
+                <div class="type-sample">
+                    <div class="type-info">
+                        <span class="type-label">비활성 텍스트</span>
+                        <span class="type-specs">#a3a3a3 / #64748b (다크모드)</span>
+                    </div>
+                    <div style="color: var(--text-disabled); font-size: 16px;">
+                        비활성화된 요소는 더 낮은 대비의 색상을 사용합니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="../assets/js/app.js"></script>
+    <script>
+    </script>
+</body>
+</html>

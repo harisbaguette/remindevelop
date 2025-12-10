@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>색상 - 디자인 시스템</title>
+    
+    <link rel="stylesheet" href="krds.css">
+    <style>
+        
+        body {
+            background: var(--color-gray-50);
+        }
+
+        .ds-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-6);
+        }
+
+        .ds-header {
+            background: white;
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-8);
+            margin-bottom: var(--spacing-6);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .ds-title {
+            font-size: 40px;
+            font-weight: var(--font-weight-bold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .ds-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--color-gray-600);
+            margin-bottom: var(--spacing-6);
+        }
+
+        .ds-actions {
+            display: flex;
+            gap: var(--spacing-3);
+        }
+
+        /* 네비게이션 스타일 */
+        .ds-nav {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-xl);
+            margin-bottom: var(--spacing-6);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .nav-container {
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .nav-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-4) var(--spacing-5);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: var(--font-weight-medium);
+            font-size: var(--font-size-sm);
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+            transition: all var(--transition-base);
+        }
+
+        .nav-item:hover {
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+        }
+
+        .nav-item.active {
+            color: var(--color-primary-600);
+            border-bottom-color: var(--color-primary-600);
+            background: var(--color-primary-50);
+        }
+
+        .section {
+            background: white;
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-8);
+            margin-bottom: var(--spacing-6);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .section-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-6);
+            padding-bottom: var(--spacing-3);
+            border-bottom: 2px solid var(--color-primary-600);
+        }
+
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: var(--spacing-4);
+        }
+
+        .color-swatch {
+            text-align: center;
+        }
+
+        .color-box {
+            height: 80px;
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-3);
+            border: 1px solid var(--color-gray-200);
+            cursor: pointer;
+            transition: transform var(--transition-base);
+        }
+
+        .color-box:hover {
+            transform: scale(1.05);
+        }
+
+        .color-label {
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-gray-700);
+        }
+
+        .color-hex {
+            font-size: var(--font-size-xs);
+            color: var(--color-gray-500);
+            font-family: monospace;
+        }
+
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-6);
+        }
+
+        .palette-group {
+            background: var(--color-gray-50);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-5);
+        }
+
+        .palette-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-4);
+        }
+    </style>
+</head>
+<body>
+    <div id="toast"></div>
+
+    <div class="ds-container">
+        <!-- 헤더 -->
+        <div class="ds-header">
+            <h1 class="ds-title">색상</h1>
+            <p class="ds-subtitle">
+                일관된 색상 시스템으로 브랜드 아이덴티티를 표현합니다
+            </p>
+            <div class="ds-actions">
+            </div>
+        </div>
+
+        <!-- 네비게이션 -->
+        <nav class="ds-nav">
+            <div class="nav-container">
+                <a href="index.html" class="nav-item">개요</a>
+                <a href="colors.html" class="nav-item active">색상</a>
+                <a href="typography.html" class="nav-item">타이포그래피</a>
+                <a href="shapes.html" class="nav-item">형태</a>
+                <a href="layout.html" class="nav-item">레이아웃</a>
+                <a href="icons.html" class="nav-item">아이콘</a>
+                <a href="elevation.html" class="nav-item">엘리베이션</a>
+                <a href="components.html" class="nav-item">컴포넌트</a>
+                <a href="patterns.html" class="nav-item">기본 패턴</a>
+                <a href="services.html" class="nav-item">서비스 패턴</a>
+            </div>
+        </nav>
+
+        <!-- 색상 팔레트 -->
+        <section class="section">
+            <h2 class="section-title">색상 팔레트</h2>
+            
+            <div class="color-palette">
+                <div class="palette-group">
+                    <h3 class="palette-title">주요 색상 (Primary)</h3>
+                    <div class="color-grid">
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #eff6ff;" onclick="copyColor('#eff6ff')"></div>
+                            <div class="color-label">50</div>
+                            <div class="color-hex">#eff6ff</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #dbeafe;" onclick="copyColor('#dbeafe')"></div>
+                            <div class="color-label">100</div>
+                            <div class="color-hex">#dbeafe</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #bfdbfe;" onclick="copyColor('#bfdbfe')"></div>
+                            <div class="color-label">200</div>
+                            <div class="color-hex">#bfdbfe</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #93c5fd;" onclick="copyColor('#93c5fd')"></div>
+                            <div class="color-label">300</div>
+                            <div class="color-hex">#93c5fd</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #60a5fa;" onclick="copyColor('#60a5fa')"></div>
+                            <div class="color-label">400</div>
+                            <div class="color-hex">#60a5fa</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #3b82f6;" onclick="copyColor('#3b82f6')"></div>
+                            <div class="color-label">500</div>
+                            <div class="color-hex">#3b82f6</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #2563eb;" onclick="copyColor('#2563eb')"></div>
+                            <div class="color-label">600</div>
+                            <div class="color-hex">#2563eb</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #1d4ed8;" onclick="copyColor('#1d4ed8')"></div>
+                            <div class="color-label">700</div>
+                            <div class="color-hex">#1d4ed8</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #1e40af;" onclick="copyColor('#1e40af')"></div>
+                            <div class="color-label">800</div>
+                            <div class="color-hex">#1e40af</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #1e3a8a;" onclick="copyColor('#1e3a8a')"></div>
+                            <div class="color-label">900</div>
+                            <div class="color-hex">#1e3a8a</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="palette-group">
+                    <h3 class="palette-title">보조 색상 (Secondary)</h3>
+                    <div class="color-grid">
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #f8fafc;" onclick="copyColor('#f8fafc')"></div>
+                            <div class="color-label">50</div>
+                            <div class="color-hex">#f8fafc</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #f1f5f9;" onclick="copyColor('#f1f5f9')"></div>
+                            <div class="color-label">100</div>
+                            <div class="color-hex">#f1f5f9</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #e2e8f0;" onclick="copyColor('#e2e8f0')"></div>
+                            <div class="color-label">200</div>
+                            <div class="color-hex">#e2e8f0</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #cbd5e1;" onclick="copyColor('#cbd5e1')"></div>
+                            <div class="color-label">300</div>
+                            <div class="color-hex">#cbd5e1</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #94a3b8;" onclick="copyColor('#94a3b8')"></div>
+                            <div class="color-label">400</div>
+                            <div class="color-hex">#94a3b8</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #64748b;" onclick="copyColor('#64748b')"></div>
+                            <div class="color-label">500</div>
+                            <div class="color-hex">#64748b</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #475569;" onclick="copyColor('#475569')"></div>
+                            <div class="color-label">600</div>
+                            <div class="color-hex">#475569</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #334155;" onclick="copyColor('#334155')"></div>
+                            <div class="color-label">700</div>
+                            <div class="color-hex">#334155</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #1e293b;" onclick="copyColor('#1e293b')"></div>
+                            <div class="color-label">800</div>
+                            <div class="color-hex">#1e293b</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #0f172a;" onclick="copyColor('#0f172a')"></div>
+                            <div class="color-label">900</div>
+                            <div class="color-hex">#0f172a</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 시스템 색상 -->
+        <section class="section">
+            <h2 class="section-title">시스템 색상</h2>
+            
+            <div class="color-palette">
+                <div class="palette-group">
+                    <h3 class="palette-title">성공 (Success)</h3>
+                    <div class="color-grid">
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #f0fdf4;" onclick="copyColor('#f0fdf4')"></div>
+                            <div class="color-label">50</div>
+                            <div class="color-hex">#f0fdf4</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #22c55e;" onclick="copyColor('#22c55e')"></div>
+                            <div class="color-label">500</div>
+                            <div class="color-hex">#22c55e</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #15803d;" onclick="copyColor('#15803d')"></div>
+                            <div class="color-label">700</div>
+                            <div class="color-hex">#15803d</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="palette-group">
+                    <h3 class="palette-title">경고 (Warning)</h3>
+                    <div class="color-grid">
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #fffbeb;" onclick="copyColor('#fffbeb')"></div>
+                            <div class="color-label">50</div>
+                            <div class="color-hex">#fffbeb</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #f59e0b;" onclick="copyColor('#f59e0b')"></div>
+                            <div class="color-label">500</div>
+                            <div class="color-hex">#f59e0b</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #b45309;" onclick="copyColor('#b45309')"></div>
+                            <div class="color-label">700</div>
+                            <div class="color-hex">#b45309</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="palette-group">
+                    <h3 class="palette-title">오류 (Error)</h3>
+                    <div class="color-grid">
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #fef2f2;" onclick="copyColor('#fef2f2')"></div>
+                            <div class="color-label">50</div>
+                            <div class="color-hex">#fef2f2</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #ef4444;" onclick="copyColor('#ef4444')"></div>
+                            <div class="color-label">500</div>
+                            <div class="color-hex">#ef4444</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #b91c1c;" onclick="copyColor('#b91c1c')"></div>
+                            <div class="color-label">700</div>
+                            <div class="color-hex">#b91c1c</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="palette-group">
+                    <h3 class="palette-title">정보 (Info)</h3>
+                    <div class="color-grid">
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #eff6ff;" onclick="copyColor('#eff6ff')"></div>
+                            <div class="color-label">50</div>
+                            <div class="color-hex">#eff6ff</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #3b82f6;" onclick="copyColor('#3b82f6')"></div>
+                            <div class="color-label">500</div>
+                            <div class="color-hex">#3b82f6</div>
+                        </div>
+                        <div class="color-swatch">
+                            <div class="color-box" style="background: #1d4ed8;" onclick="copyColor('#1d4ed8')"></div>
+                            <div class="color-label">700</div>
+                            <div class="color-hex">#1d4ed8</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 투명도 -->
+        <section class="section">
+            <h2 class="section-title">투명도</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-4);">
+                <div style="text-align: center;">
+                    <div style="height: 80px; background: rgba(59, 130, 246, 0.1); border-radius: var(--radius-lg); margin-bottom: var(--spacing-3); border: 1px solid var(--color-gray-200);"></div>
+                    <div class="color-label">10%</div>
+                    <div class="color-hex">rgba(59, 130, 246, 0.1)</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="height: 80px; background: rgba(59, 130, 246, 0.2); border-radius: var(--radius-lg); margin-bottom: var(--spacing-3); border: 1px solid var(--color-gray-200);"></div>
+                    <div class="color-label">20%</div>
+                    <div class="color-hex">rgba(59, 130, 246, 0.2)</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="height: 80px; background: rgba(59, 130, 246, 0.3); border-radius: var(--radius-lg); margin-bottom: var(--spacing-3); border: 1px solid var(--color-gray-200);"></div>
+                    <div class="color-label">30%</div>
+                    <div class="color-hex">rgba(59, 130, 246, 0.3)</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="height: 80px; background: rgba(59, 130, 246, 0.5); border-radius: var(--radius-lg); margin-bottom: var(--spacing-3); border: 1px solid var(--color-gray-200);"></div>
+                    <div class="color-label">50%</div>
+                    <div class="color-hex">rgba(59, 130, 246, 0.5)</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="../assets/js/app.js"></script>
+    <script>
+
+        function copyColor(hex) {
+            navigator.clipboard.writeText(hex).then(() => {
+                toast.success(`색상 코드 복사됨: ${hex}`);
+            });
+        }
+
+    </script>
+</body>
+</html>

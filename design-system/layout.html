@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>레이아웃 - 디자인 시스템</title>
+    
+    <link rel="stylesheet" href="krds.css">
+    <style>
+        
+        body {
+            background: var(--color-gray-50);
+        }
+
+        .ds-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-6);
+        }
+
+        .ds-header {
+            background: white;
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-8);
+            margin-bottom: var(--spacing-6);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .ds-title {
+            font-size: 40px;
+            font-weight: var(--font-weight-bold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .ds-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--color-gray-600);
+            margin-bottom: var(--spacing-6);
+        }
+
+        .ds-actions {
+            display: flex;
+            gap: var(--spacing-3);
+        }
+
+        /* 네비게이션 스타일 */
+        .ds-nav {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-xl);
+            margin-bottom: var(--spacing-6);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .nav-container {
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .nav-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-4) var(--spacing-5);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: var(--font-weight-medium);
+            font-size: var(--font-size-sm);
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+            transition: all var(--transition-base);
+        }
+
+        .nav-item:hover {
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+        }
+
+        .nav-item.active {
+            color: var(--color-primary-600);
+            border-bottom-color: var(--color-primary-600);
+            background: var(--color-primary-50);
+        }
+
+        .section {
+            background: white;
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-8);
+            margin-bottom: var(--spacing-6);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .section-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-6);
+            padding-bottom: var(--spacing-3);
+            border-bottom: 2px solid var(--color-primary-600);
+        }
+
+        .grid-demo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-6);
+        }
+
+        .grid-item {
+            padding: var(--spacing-5);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+        }
+
+        .grid-title {
+            font-size: var(--font-size-md);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .breakpoint-demo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-4);
+        }
+
+        .breakpoint-item {
+            text-align: center;
+            padding: var(--spacing-4);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+        }
+
+        .breakpoint-label {
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-gray-700);
+            margin-bottom: var(--spacing-2);
+        }
+
+        .breakpoint-specs {
+            font-size: var(--font-size-xs);
+            color: var(--color-gray-500);
+            font-family: monospace;
+        }
+
+        .spacing-demo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-4);
+        }
+
+        .spacing-item {
+            text-align: center;
+            padding: var(--spacing-4);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+        }
+
+        .spacing-visual {
+            height: 40px;
+            background: var(--color-primary-100);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-xs);
+            color: var(--color-primary-700);
+        }
+
+        .layout-example {
+            border: 2px dashed var(--color-primary-300);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-4);
+            background: var(--color-primary-50);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .layout-header {
+            background: var(--color-primary-600);
+            color: white;
+            padding: var(--spacing-3);
+            border-radius: var(--radius-md);
+            text-align: center;
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            margin-bottom: var(--spacing-3);
+        }
+
+        .layout-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: var(--spacing-3);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .layout-sidebar {
+            background: var(--color-primary-200);
+            padding: var(--spacing-3);
+            border-radius: var(--radius-md);
+            text-align: center;
+            font-size: var(--font-size-sm);
+            color: var(--color-primary-800);
+        }
+
+        .layout-main {
+            background: var(--color-primary-200);
+            padding: var(--spacing-3);
+            border-radius: var(--radius-md);
+            text-align: center;
+            font-size: var(--font-size-sm);
+            color: var(--color-primary-800);
+        }
+
+        .layout-footer {
+            background: var(--color-primary-600);
+            color: white;
+            padding: var(--spacing-3);
+            border-radius: var(--radius-md);
+            text-align: center;
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div id="toast"></div>
+
+    <div class="ds-container">
+        <!-- 헤더 -->
+        <div class="ds-header">
+            <h1 class="ds-title">레이아웃</h1>
+            <p class="ds-subtitle">
+                일관된 레이아웃 시스템으로 사용자 경험을 향상시킵니다
+            </p>
+            <div class="ds-actions">
+            </div>
+        </div>
+
+        <!-- 네비게이션 -->
+        <nav class="ds-nav">
+            <div class="nav-container">
+                <a href="index.html" class="nav-item">개요</a>
+                <a href="colors.html" class="nav-item">색상</a>
+                <a href="typography.html" class="nav-item">타이포그래피</a>
+                <a href="shapes.html" class="nav-item">형태</a>
+                <a href="layout.html" class="nav-item active">레이아웃</a>
+                <a href="icons.html" class="nav-item">아이콘</a>
+                <a href="elevation.html" class="nav-item">엘리베이션</a>
+                <a href="components.html" class="nav-item">컴포넌트</a>
+                <a href="patterns.html" class="nav-item">기본 패턴</a>
+                <a href="services.html" class="nav-item">서비스 패턴</a>
+            </div>
+        </nav>
+
+        <!-- 그리드 요소 -->
+        <section class="section">
+            <h2 class="section-title">그리드 요소</h2>
+            
+            <div class="grid-demo">
+                <div class="grid-item">
+                    <div class="grid-title">12컬럼 그리드</div>
+                    <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; margin-bottom: var(--spacing-3);">
+                        <div style="height: 20px; background: var(--color-primary-200); border-radius: 2px;"></div>
+                        <div style="height: 20px; background: var(--color-primary-200); border-radius: 2px;"></div>
+                        <div style="height: 20px; background: var(--color-primary-200); border-radius: 2px;"></div>
+                        <div style="height: 20px; background: var(--color-primary-200); border-radius: 2px;"></div>
+                        <div style="height: 20px; background: var(--color-primary-200); border-radius: 2px;"></div>
+                        <div style="height: 20px; background: var(--color-primary-200); border-radius: 2px;"></div>
+                        <div style="height: 20px; background: var(--color-primary-200); border-radius: 2px;"></div>
+                        <div style="height: 20px; background: var(--color-primary-200); border-radius: 2px;"></div>
+                        <div style="height: 20px; background: var(--color-primary-200); border-radius: 2px;"></div>
+                        <div style="height: 20px; background: var(--color-primary-200); border-radius: 2px;"></div>
+                        <div style="height: 20px; background: var(--color-primary-200); border-radius: 2px;"></div>
+                        <div style="height: 20px; background: var(--color-primary-200); border-radius: 2px;"></div>
+                    </div>
+                    <p style="font-size: var(--font-size-sm); color: var(--color-gray-600);">
+                        반응형 12컬럼 그리드 시스템으로 유연한 레이아웃을 구성합니다.
+                    </p>
+                </div>
+
+                <div class="grid-item">
+                    <div class="grid-title">Flexbox 레이아웃</div>
+                    <div style="display: flex; gap: 8px; margin-bottom: var(--spacing-3);">
+                        <div style="flex: 1; height: 20px; background: var(--color-primary-200); border-radius: 2px;"></div>
+                        <div style="flex: 2; height: 20px; background: var(--color-primary-200); border-radius: 2px;"></div>
+                        <div style="flex: 1; height: 20px; background: var(--color-primary-200); border-radius: 2px;"></div>
+                    </div>
+                    <p style="font-size: var(--font-size-sm); color: var(--color-gray-600);">
+                        Flexbox를 활용한 유연한 레이아웃 구성 방법입니다.
+                    </p>
+                </div>
+
+                <div class="grid-item">
+                    <div class="grid-title">CSS Grid</div>
+                    <div style="display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 8px; margin-bottom: var(--spacing-3);">
+                        <div style="height: 20px; background: var(--color-primary-200); border-radius: 2px;"></div>
+                        <div style="height: 20px; background: var(--color-primary-200); border-radius: 2px;"></div>
+                        <div style="height: 20px; background: var(--color-primary-200); border-radius: 2px;"></div>
+                    </div>
+                    <p style="font-size: var(--font-size-sm); color: var(--color-gray-600);">
+                        CSS Grid를 활용한 2차원 레이아웃 구성 방법입니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 브레이크포인트 -->
+        <section class="section">
+            <h2 class="section-title">브레이크포인트</h2>
+            
+            <div class="breakpoint-demo">
+                <div class="breakpoint-item">
+                    <div class="breakpoint-label">모바일</div>
+                    <div class="breakpoint-specs">320px ~ 767px</div>
+                    <p style="font-size: var(--font-size-xs); color: var(--color-gray-600); margin-top: var(--spacing-2);">
+                        세로 레이아웃, 터치 최적화
+                    </p>
+                </div>
+
+                <div class="breakpoint-item">
+                    <div class="breakpoint-label">태블릿</div>
+                    <div class="breakpoint-specs">768px ~ 1023px</div>
+                    <p style="font-size: var(--font-size-xs); color: var(--color-gray-600); margin-top: var(--spacing-2);">
+                        혼합 레이아웃, 중간 크기
+                    </p>
+                </div>
+
+                <div class="breakpoint-item">
+                    <div class="breakpoint-label">데스크톱</div>
+                    <div class="breakpoint-specs">1024px ~ 1439px</div>
+                    <p style="font-size: var(--font-size-xs); color: var(--color-gray-600); margin-top: var(--spacing-2);">
+                        가로 레이아웃, 마우스 최적화
+                    </p>
+                </div>
+
+                <div class="breakpoint-item">
+                    <div class="breakpoint-label">와이드</div>
+                    <div class="breakpoint-specs">1440px+</div>
+                    <p style="font-size: var(--font-size-xs); color: var(--color-gray-600); margin-top: var(--spacing-2);">
+                        대형 화면, 최대 너비 제한
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 콘텐츠 영역 -->
+        <section class="section">
+            <h2 class="section-title">콘텐츠 영역</h2>
+            
+            <div class="grid-demo">
+                <div class="grid-item">
+                    <div class="grid-title">컨테이너 크기</div>
+                    <div style="display: flex; flex-direction: column; gap: var(--spacing-3);">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: var(--font-size-sm);">Small</span>
+                            <span style="font-size: var(--font-size-xs); color: var(--color-gray-500); font-family: monospace;">640px</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: var(--font-size-sm);">Medium</span>
+                            <span style="font-size: var(--font-size-xs); color: var(--color-gray-500); font-family: monospace;">768px</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: var(--font-size-sm);">Large</span>
+                            <span style="font-size: var(--font-size-xs); color: var(--color-gray-500); font-family: monospace;">1024px</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: var(--font-size-sm);">XLarge</span>
+                            <span style="font-size: var(--font-size-xs); color: var(--color-gray-500); font-family: monospace;">1280px</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: var(--font-size-sm);">2XLarge</span>
+                            <span style="font-size: var(--font-size-xs); color: var(--color-gray-500); font-family: monospace;">1536px</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-item">
+                    <div class="grid-title">사이드바 & 헤더</div>
+                    <div style="display: flex; flex-direction: column; gap: var(--spacing-3);">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: var(--font-size-sm);">사이드바 너비</span>
+                            <span style="font-size: var(--font-size-xs); color: var(--color-gray-500); font-family: monospace;">280px</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: var(--font-size-sm);">헤더 높이</span>
+                            <span style="font-size: var(--font-size-xs); color: var(--color-gray-500); font-family: monospace;">64px</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: var(--font-size-sm);">모바일 헤더</span>
+                            <span style="font-size: var(--font-size-xs); color: var(--color-gray-500); font-family: monospace;">56px</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 서브 페이지 레이아웃 -->
+        <section class="section">
+            <h2 class="section-title">서브 페이지 레이아웃</h2>
+            
+            <div class="layout-example">
+                <div class="layout-header">헤더 (Header)</div>
+                <div class="layout-content">
+                    <div class="layout-sidebar">사이드바 (Sidebar)</div>
+                    <div class="layout-main">메인 콘텐츠 (Main Content)</div>
+                </div>
+                <div class="layout-footer">푸터 (Footer)</div>
+            </div>
+            
+            <p style="font-size: var(--font-size-sm); color: var(--color-gray-600);">
+                일반적인 웹 애플리케이션의 레이아웃 구조입니다. 헤더, 사이드바, 메인 콘텐츠, 푸터로 구성됩니다.
+            </p>
+        </section>
+
+        <!-- 간격 -->
+        <section class="section">
+            <h2 class="section-title">간격</h2>
+            
+            <div class="spacing-demo">
+                <div class="spacing-item">
+                    <div class="spacing-visual" style="height: 4px;">4px</div>
+                    <div class="breakpoint-label">XS</div>
+                    <div class="breakpoint-specs">--spacing-1</div>
+                </div>
+
+                <div class="spacing-item">
+                    <div class="spacing-visual" style="height: 8px;">8px</div>
+                    <div class="breakpoint-label">SM</div>
+                    <div class="breakpoint-specs">--spacing-2</div>
+                </div>
+
+                <div class="spacing-item">
+                    <div class="spacing-visual" style="height: 12px;">12px</div>
+                    <div class="breakpoint-label">MD</div>
+                    <div class="breakpoint-specs">--spacing-3</div>
+                </div>
+
+                <div class="spacing-item">
+                    <div class="spacing-visual" style="height: 16px;">16px</div>
+                    <div class="breakpoint-label">LG</div>
+                    <div class="breakpoint-specs">--spacing-4</div>
+                </div>
+
+                <div class="spacing-item">
+                    <div class="spacing-visual" style="height: 20px;">20px</div>
+                    <div class="breakpoint-label">XL</div>
+                    <div class="breakpoint-specs">--spacing-5</div>
+                </div>
+
+                <div class="spacing-item">
+                    <div class="spacing-visual" style="height: 24px;">24px</div>
+                    <div class="breakpoint-label">2XL</div>
+                    <div class="breakpoint-specs">--spacing-6</div>
+                </div>
+
+                <div class="spacing-item">
+                    <div class="spacing-visual" style="height: 32px;">32px</div>
+                    <div class="breakpoint-label">3XL</div>
+                    <div class="breakpoint-specs">--spacing-8</div>
+                </div>
+
+                <div class="spacing-item">
+                    <div class="spacing-visual" style="height: 48px;">48px</div>
+                    <div class="breakpoint-label">4XL</div>
+                    <div class="breakpoint-specs">--spacing-12</div>
+                </div>
+
+                <div class="spacing-item">
+                    <div class="spacing-visual" style="height: 64px;">64px</div>
+                    <div class="breakpoint-label">5XL</div>
+                    <div class="breakpoint-specs">--spacing-16</div>
+                </div>
+
+                <div class="spacing-item">
+                    <div class="spacing-visual" style="height: 80px;">80px</div>
+                    <div class="breakpoint-label">6XL</div>
+                    <div class="breakpoint-specs">--spacing-20</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 간격 적용 -->
+        <section class="section">
+            <h2 class="section-title">간격 적용</h2>
+            
+            <div class="grid-demo">
+                <div class="grid-item">
+                    <div class="grid-title">카드 내부 간격</div>
+                    <div style="border: 1px solid var(--border-default); border-radius: var(--radius-lg); padding: var(--spacing-4); background: var(--bg-primary);">
+                        <div style="font-size: var(--font-size-sm); font-weight: 600; margin-bottom: var(--spacing-3);">카드 제목</div>
+                        <div style="font-size: var(--font-size-sm); color: var(--color-gray-600); margin-bottom: var(--spacing-4);">카드 설명 텍스트입니다.</div>
+                        <button class="btn btn-primary btn-sm">액션</button>
+                    </div>
+                    <p style="font-size: var(--font-size-sm); color: var(--color-gray-600); margin-top: var(--spacing-3);">
+                        카드 내부 요소들 사이의 일관된 간격을 유지합니다.
+                    </p>
+                </div>
+
+                <div class="grid-item">
+                    <div class="grid-title">섹션 간격</div>
+                    <div style="display: flex; flex-direction: column; gap: var(--spacing-6);">
+                        <div style="padding: var(--spacing-4); background: var(--color-primary-100); border-radius: var(--radius-md); text-align: center; font-size: var(--font-size-sm);">섹션 1</div>
+                        <div style="padding: var(--spacing-4); background: var(--color-primary-100); border-radius: var(--radius-md); text-align: center; font-size: var(--font-size-sm);">섹션 2</div>
+                        <div style="padding: var(--spacing-4); background: var(--color-primary-100); border-radius: var(--radius-md); text-align: center; font-size: var(--font-size-sm);">섹션 3</div>
+                    </div>
+                    <p style="font-size: var(--font-size-sm); color: var(--color-gray-600); margin-top: var(--spacing-3);">
+                        섹션들 사이의 적절한 간격으로 시각적 구분을 명확히 합니다.
+                    </p>
+                </div>
+
+                <div class="grid-item">
+                    <div class="grid-title">폼 요소 간격</div>
+                    <div style="display: flex; flex-direction: column; gap: var(--spacing-4);">
+                        <input type="text" class="input" placeholder="입력 필드 1">
+                        <input type="text" class="input" placeholder="입력 필드 2">
+                        <button class="btn btn-primary">제출</button>
+                    </div>
+                    <p style="font-size: var(--font-size-sm); color: var(--color-gray-600); margin-top: var(--spacing-3);">
+                        폼 요소들 사이의 일관된 간격으로 사용성을 향상시킵니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="../assets/js/app.js"></script>
+    <script>
+    </script>
+</body>
+</html>

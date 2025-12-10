@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>아이콘 - 디자인 시스템</title>
+    
+    <link rel="stylesheet" href="krds.css">
+    <style>
+        
+        body {
+            background: var(--color-gray-50);
+        }
+
+        .ds-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-6);
+        }
+
+        .ds-header {
+            background: white;
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-8);
+            margin-bottom: var(--spacing-6);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .ds-title {
+            font-size: 40px;
+            font-weight: var(--font-weight-bold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .ds-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--color-gray-600);
+            margin-bottom: var(--spacing-6);
+        }
+
+        .ds-actions {
+            display: flex;
+            gap: var(--spacing-3);
+        }
+
+        /* 네비게이션 스타일 */
+        .ds-nav {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-xl);
+            margin-bottom: var(--spacing-6);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .nav-container {
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .nav-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-4) var(--spacing-5);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: var(--font-weight-medium);
+            font-size: var(--font-size-sm);
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+            transition: all var(--transition-base);
+        }
+
+        .nav-item:hover {
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+        }
+
+        .nav-item.active {
+            color: var(--color-primary-600);
+            border-bottom-color: var(--color-primary-600);
+            background: var(--color-primary-50);
+        }
+
+        .section {
+            background: white;
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-8);
+            margin-bottom: var(--spacing-6);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .section-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-6);
+            padding-bottom: var(--spacing-3);
+            border-bottom: 2px solid var(--color-primary-600);
+        }
+
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: var(--spacing-4);
+        }
+
+        .icon-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: var(--spacing-4);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+            transition: all var(--transition-base);
+        }
+
+        .icon-item:hover {
+            background: var(--bg-secondary);
+            transform: translateY(-2px);
+        }
+
+        .icon-visual {
+            width: 24px;
+            height: 24px;
+            margin-bottom: var(--spacing-2);
+            color: var(--color-gray-700);
+        }
+
+        .icon-label {
+            font-size: var(--font-size-xs);
+            color: var(--color-gray-600);
+            text-align: center;
+            font-weight: var(--font-weight-medium);
+        }
+
+        .size-demo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-6);
+        }
+
+        .size-item {
+            text-align: center;
+            padding: var(--spacing-5);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+        }
+
+        .size-visual {
+            margin-bottom: var(--spacing-3);
+            color: var(--color-primary-600);
+        }
+
+        .size-label {
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-gray-700);
+            margin-bottom: var(--spacing-2);
+        }
+
+        .size-specs {
+            font-size: var(--font-size-xs);
+            color: var(--color-gray-500);
+            font-family: monospace;
+        }
+
+        .icon-category {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-6);
+        }
+
+        .category-item {
+            padding: var(--spacing-5);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+        }
+
+        .category-title {
+            font-size: var(--font-size-md);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .category-icons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-3);
+        }
+
+        .category-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: var(--spacing-3);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            background: var(--bg-secondary);
+        }
+
+        .category-icon svg {
+            width: 20px;
+            height: 20px;
+            color: var(--color-gray-600);
+            margin-bottom: var(--spacing-2);
+        }
+
+        .category-icon span {
+            font-size: 10px;
+            color: var(--color-gray-500);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="toast"></div>
+
+    <div class="ds-container">
+        <!-- 헤더 -->
+        <div class="ds-header">
+            <h1 class="ds-title">아이콘</h1>
+            <p class="ds-subtitle">
+                일관된 아이콘 시스템으로 직관적인 사용자 경험을 제공합니다
+            </p>
+            <div class="ds-actions">
+            </div>
+        </div>
+
+        <!-- 네비게이션 -->
+        <nav class="ds-nav">
+            <div class="nav-container">
+                <a href="index.html" class="nav-item">개요</a>
+                <a href="colors.html" class="nav-item">색상</a>
+                <a href="typography.html" class="nav-item">타이포그래피</a>
+                <a href="shapes.html" class="nav-item">형태</a>
+                <a href="layout.html" class="nav-item">레이아웃</a>
+                <a href="icons.html" class="nav-item active">아이콘</a>
+                <a href="elevation.html" class="nav-item">엘리베이션</a>
+                <a href="components.html" class="nav-item">컴포넌트</a>
+                <a href="patterns.html" class="nav-item">기본 패턴</a>
+                <a href="services.html" class="nav-item">서비스 패턴</a>
+            </div>
+        </nav>
+
+        <!-- 시스템 아이콘 -->
+        <section class="section">
+            <h2 class="section-title">시스템 아이콘</h2>
+            
+            <div class="icon-category">
+                <div class="category-item">
+                    <div class="category-title">네비게이션</div>
+                    <div class="category-icons">
+                        <div class="category-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                            </svg>
+                            <span>홈</span>
+                        </div>
+                        <div class="category-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                            </svg>
+                            <span>복사</span>
+                        </div>
+                        <div class="category-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                            </svg>
+                            <span>업로드</span>
+                        </div>
+                        <div class="category-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            <span>이미지</span>
+                        </div>
+                        <div class="category-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"/>
+                            </svg>
+                            <span>설정</span>
+                        </div>
+                        <div class="category-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span>도움말</span>
+                        </div>
+                        <div class="category-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4 19h6v-2H4v2zM4 15h6v-2H4v2zM4 11h6V9H4v2zM4 7h6V5H4v2z"/>
+                            </svg>
+                            <span>정렬</span>
+                        </div>
+                        <div class="category-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                            </svg>
+                            <span>필터</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="category-item">
+                    <div class="category-title">액션</div>
+                    <div class="category-icons">
+                        <div class="category-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                            </svg>
+                            <span>추가</span>
+                        </div>
+                        <div class="category-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            <span>편집</span>
+                        </div>
+                        <div class="category-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                            <span>삭제</span>
+                        </div>
+                        <div class="category-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                            </svg>
+                            <span>새로고침</span>
+                        </div>
+                        <div class="category-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                            </svg>
+                            <span>이동</span>
+                        </div>
+                        <div class="category-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span>완료</span>
+                        </div>
+                        <div class="category-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                            <span>취소</span>
+                        </div>
+                        <div class="category-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span>정보</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="category-item">
+                    <div class="category-title">상태</div>
+                    <div class="category-icons">
+                        <div class="category-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                            </svg>
+                            <span>경고</span>
+                        </div>
+                        <div class="category-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span>오류</span>
+                        </div>
+                        <div class="category-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span>성공</span>
+                        </div>
+                        <div class="category-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span>대기</span>
+                        </div>
+                        <div class="category-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                            <span>보기</span>
+                        </div>
+                        <div class="category-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"/>
+                            </svg>
+                            <span>숨기기</span>
+                        </div>
+                        <div class="category-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            <span>체크</span>
+                        </div>
+                        <div class="category-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                            <span>닫기</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 사이즈 -->
+        <section class="section">
+            <h2 class="section-title">사이즈</h2>
+            
+            <div class="size-demo">
+                <div class="size-item">
+                    <div class="size-visual">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                    </div>
+                    <div class="size-label">작음 (XS)</div>
+                    <div class="size-specs">16px</div>
+                </div>
+
+                <div class="size-item">
+                    <div class="size-visual">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                    </div>
+                    <div class="size-label">보통 (SM)</div>
+                    <div class="size-specs">20px</div>
+                </div>
+
+                <div class="size-item">
+                    <div class="size-visual">
+                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                    </div>
+                    <div class="size-label">기본 (MD)</div>
+                    <div class="size-specs">24px</div>
+                </div>
+
+                <div class="size-item">
+                    <div class="size-visual">
+                        <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                    </div>
+                    <div class="size-label">큼 (LG)</div>
+                    <div class="size-specs">32px</div>
+                </div>
+
+                <div class="size-item">
+                    <div class="size-visual">
+                        <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                    </div>
+                    <div class="size-label">매우 큼 (XL)</div>
+                    <div class="size-specs">40px</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 키라인 -->
+        <section class="section">
+            <h2 class="section-title">키라인</h2>
+            
+            <div class="icon-grid">
+                <div class="icon-item">
+                    <div class="icon-visual">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                    </div>
+                    <div class="icon-label">얇음 (1px)</div>
+                </div>
+
+                <div class="icon-item">
+                    <div class="icon-visual">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                    </div>
+                    <div class="icon-label">기본 (1.5px)</div>
+                </div>
+
+                <div class="icon-item">
+                    <div class="icon-visual">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                    </div>
+                    <div class="icon-label">굵음 (2px)</div>
+                </div>
+
+                <div class="icon-item">
+                    <div class="icon-visual">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                    </div>
+                    <div class="icon-label">매우 굵음 (2.5px)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 둥글기 값 -->
+        <section class="section">
+            <h2 class="section-title">둥글기 값</h2>
+            
+            <div class="icon-grid">
+                <div class="icon-item">
+                    <div class="icon-visual">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="0" ry="0"/>
+                        </svg>
+                    </div>
+                    <div class="icon-label">각진 (0px)</div>
+                </div>
+
+                <div class="icon-item">
+                    <div class="icon-visual">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        </svg>
+                    </div>
+                    <div class="icon-label">약간 둥근 (2px)</div>
+                </div>
+
+                <div class="icon-item">
+                    <div class="icon-visual">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="4" ry="4"/>
+                        </svg>
+                    </div>
+                    <div class="icon-label">둥근 (4px)</div>
+                </div>
+
+                <div class="icon-item">
+                    <div class="icon-visual">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="8" ry="8"/>
+                        </svg>
+                    </div>
+                    <div class="icon-label">매우 둥근 (8px)</div>
+                </div>
+
+                <div class="icon-item">
+                    <div class="icon-visual">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="9"/>
+                        </svg>
+                    </div>
+                    <div class="icon-label">원형 (50%)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 디테일 요소 -->
+        <section class="section">
+            <h2 class="section-title">디테일 요소</h2>
+            
+            <div class="icon-grid">
+                <div class="icon-item">
+                    <div class="icon-visual">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                    </div>
+                    <div class="icon-label">둥근 끝</div>
+                </div>
+
+                <div class="icon-item">
+                    <div class="icon-visual">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="square" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                    </div>
+                    <div class="icon-label">각진 끝</div>
+                </div>
+
+                <div class="icon-item">
+                    <div class="icon-visual">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="miter" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                    </div>
+                    <div class="icon-label">뾰족한 끝</div>
+                </div>
+
+                <div class="icon-item">
+                    <div class="icon-visual">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="bevel" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                    </div>
+                    <div class="icon-label">베벨 연결</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 아이콘 색상 -->
+        <section class="section">
+            <h2 class="section-title">아이콘 색상</h2>
+            
+            <div class="icon-grid">
+                <div class="icon-item">
+                    <div class="icon-visual" style="color: var(--color-gray-700);">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                    </div>
+                    <div class="icon-label">기본</div>
+                </div>
+
+                <div class="icon-item">
+                    <div class="icon-visual" style="color: var(--color-primary-600);">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                    </div>
+                    <div class="icon-label">주요</div>
+                </div>
+
+                <div class="icon-item">
+                    <div class="icon-visual" style="color: var(--color-success-500);">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                    </div>
+                    <div class="icon-label">성공</div>
+                </div>
+
+                <div class="icon-item">
+                    <div class="icon-visual" style="color: var(--color-warning-500);">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                    </div>
+                    <div class="icon-label">경고</div>
+                </div>
+
+                <div class="icon-item">
+                    <div class="icon-visual" style="color: var(--color-error-500);">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                    </div>
+                    <div class="icon-label">오류</div>
+                </div>
+
+                <div class="icon-item">
+                    <div class="icon-visual" style="color: var(--color-gray-400);">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                    </div>
+                    <div class="icon-label">비활성</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="../assets/js/app.js"></script>
+    <script>
+    </script>
+</body>
+</html>

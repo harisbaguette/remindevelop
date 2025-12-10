@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>컴포넌트 - 디자인 시스템</title>
+    
+    <link rel="stylesheet" href="krds.css">
+    <style>
+        
+        body {
+            background: var(--color-gray-50);
+        }
+
+        .ds-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-6);
+        }
+
+        .ds-header {
+            background: white;
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-8);
+            margin-bottom: var(--spacing-6);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .ds-title {
+            font-size: 40px;
+            font-weight: var(--font-weight-bold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .ds-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--color-gray-600);
+            margin-bottom: var(--spacing-6);
+        }
+
+        .ds-actions {
+            display: flex;
+            gap: var(--spacing-3);
+        }
+
+        /* 네비게이션 스타일 */
+        .ds-nav {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-xl);
+            margin-bottom: var(--spacing-6);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .nav-container {
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .nav-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-4) var(--spacing-5);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: var(--font-weight-medium);
+            font-size: var(--font-size-sm);
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+            transition: all var(--transition-base);
+        }
+
+        .nav-item:hover {
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+        }
+
+        .nav-item.active {
+            color: var(--color-primary-600);
+            border-bottom-color: var(--color-primary-600);
+            background: var(--color-primary-50);
+        }
+
+        .section {
+            background: white;
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-8);
+            margin-bottom: var(--spacing-6);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .section-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-6);
+            padding-bottom: var(--spacing-3);
+            border-bottom: 2px solid var(--color-primary-600);
+        }
+
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-6);
+        }
+
+        .component-item {
+            padding: var(--spacing-5);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+        }
+
+        .component-title {
+            font-size: var(--font-size-md);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .component-demo {
+            margin-bottom: var(--spacing-4);
+        }
+
+        .component-description {
+            font-size: var(--font-size-sm);
+            color: var(--color-gray-600);
+            line-height: 1.5;
+        }
+
+        .banner-demo {
+            padding: var(--spacing-4);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-3);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .banner-info {
+            background: var(--color-info-50);
+            color: var(--color-info-700);
+            border: 1px solid var(--color-info-200);
+        }
+
+        .banner-success {
+            background: var(--color-success-50);
+            color: var(--color-success-700);
+            border: 1px solid var(--color-success-200);
+        }
+
+        .banner-warning {
+            background: var(--color-warning-50);
+            color: var(--color-warning-700);
+            border: 1px solid var(--color-warning-200);
+        }
+
+        .banner-error {
+            background: var(--color-error-50);
+            color: var(--color-error-700);
+            border: 1px solid var(--color-error-200);
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            font-size: var(--font-size-sm);
+        }
+
+        .breadcrumb-item {
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        .breadcrumb-item:hover {
+            color: var(--text-primary);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--text-primary);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .breadcrumb-separator {
+            color: var(--text-tertiary);
+        }
+
+        .pagination-demo {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .pagination-btn {
+            min-width: 32px;
+            height: 32px;
+            padding: 0 var(--spacing-2);
+            border: 1px solid var(--border-default);
+            background: var(--bg-primary);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pagination-btn:hover:not(.disabled):not(.active) {
+            background: var(--bg-secondary);
+            border-color: var(--border-strong);
+        }
+
+        .pagination-btn.active {
+            background: var(--color-primary-600);
+            border-color: var(--color-primary-600);
+            color: var(--color-white);
+        }
+
+        .pagination-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .tabs-demo {
+            border-bottom: 1px solid var(--border-default);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .tabs-list {
+            display: flex;
+            gap: var(--spacing-1);
+        }
+
+        .tab-item {
+            padding: var(--spacing-3) var(--spacing-4);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+            color: var(--text-secondary);
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            white-space: nowrap;
+        }
+
+        .tab-item:hover {
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+        }
+
+        .tab-item.active {
+            color: var(--color-primary-600);
+            border-bottom-color: var(--color-primary-600);
+        }
+
+        .accordion-demo {
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+
+        .accordion-item {
+            border-bottom: 1px solid var(--border-default);
+        }
+
+        .accordion-item:last-child {
+            border-bottom: none;
+        }
+
+        .accordion-header {
+            padding: var(--spacing-4);
+            background: var(--bg-primary);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: var(--font-weight-medium);
+            transition: background var(--transition-base);
+        }
+
+        .accordion-header:hover {
+            background: var(--bg-secondary);
+        }
+
+        .accordion-content {
+            padding: var(--spacing-4);
+            background: var(--bg-secondary);
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .carousel-demo {
+            position: relative;
+            width: 100%;
+            height: 120px;
+            background: var(--color-primary-100);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-primary-700);
+            font-weight: 600;
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: var(--text-primary);
+        }
+
+        .carousel-prev {
+            left: var(--spacing-3);
+        }
+
+        .carousel-next {
+            right: var(--spacing-3);
+        }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: var(--spacing-3);
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: var(--spacing-2);
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            border: none;
+            cursor: pointer;
+        }
+
+        .carousel-dot.active {
+            background: white;
+        }
+
+        .progress-demo {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            margin-bottom: var(--spacing-2);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--color-primary-600);
+            transition: width var(--transition-base);
+            border-radius: var(--radius-full);
+        }
+
+        .progress-success .progress-bar {
+            background: var(--color-success-500);
+        }
+
+        .progress-warning .progress-bar {
+            background: var(--color-warning-500);
+        }
+
+        .progress-error .progress-bar {
+            background: var(--color-error-500);
+        }
+
+        .tooltip-demo {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip {
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-gray-900);
+            color: white;
+            padding: var(--spacing-2) var(--spacing-3);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-xs);
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-base);
+            z-index: 1000;
+        }
+
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: var(--color-gray-900);
+        }
+
+        .tooltip-demo:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .spinner-demo {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-4);
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--border-default);
+            border-top-color: var(--color-primary-600);
+            border-radius: var(--radius-full);
+            animation: spin 0.8s linear infinite;
+        }
+
+        .spinner-sm {
+            width: 16px;
+            height: 16px;
+            border-width: 2px;
+        }
+
+        .spinner-lg {
+            width: 40px;
+            height: 40px;
+            border-width: 4px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--color-gray-300);
+            transition: var(--transition-base);
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            transition: var(--transition-base);
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background: var(--color-primary-600);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(20px);
+        }
+
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .step {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+            border: 2px solid var(--border-default);
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+        }
+
+        .step.active {
+            background: var(--color-primary-600);
+            border-color: var(--color-primary-600);
+            color: white;
+        }
+
+        .step.completed {
+            background: var(--color-success-500);
+            border-color: var(--color-success-500);
+            color: white;
+        }
+
+        .step-line {
+            width: 40px;
+            height: 2px;
+            background: var(--border-default);
+        }
+
+        .step-line.completed {
+            background: var(--color-success-500);
+        }
+    </style>
+</head>
+<body>
+    <div id="toast"></div>
+
+    <div class="ds-container">
+        <!-- 헤더 -->
+        <div class="ds-header">
+            <h1 class="ds-title">컴포넌트</h1>
+            <p class="ds-subtitle">
+                재사용 가능한 UI 컴포넌트로 일관된 사용자 경험을 제공합니다
+            </p>
+            <div class="ds-actions">
+            </div>
+        </div>
+
+        <!-- 네비게이션 -->
+        <nav class="ds-nav">
+            <div class="nav-container">
+                <a href="index.html" class="nav-item">개요</a>
+                <a href="colors.html" class="nav-item">색상</a>
+                <a href="typography.html" class="nav-item">타이포그래피</a>
+                <a href="shapes.html" class="nav-item">형태</a>
+                <a href="layout.html" class="nav-item">레이아웃</a>
+                <a href="icons.html" class="nav-item">아이콘</a>
+                <a href="elevation.html" class="nav-item">엘리베이션</a>
+                <a href="components.html" class="nav-item active">컴포넌트</a>
+                <a href="patterns.html" class="nav-item">기본 패턴</a>
+                <a href="services.html" class="nav-item">서비스 패턴</a>
+            </div>
+        </nav>
+
+        <!-- 배너 -->
+        <section class="section">
+            <h2 class="section-title">배너</h2>
+            
+            <div class="component-grid">
+                <div class="component-item">
+                    <div class="component-title">정보 배너</div>
+                    <div class="component-demo">
+                        <div class="banner-demo banner-info">
+                            ℹ️ 새로운 기능이 추가되었습니다.
+                        </div>
+                    </div>
+                    <div class="component-description">
+                        일반적인 정보나 공지를 표시할 때 사용합니다.
+                    </div>
+                </div>
+
+                <div class="component-item">
+                    <div class="component-title">성공 배너</div>
+                    <div class="component-demo">
+                        <div class="banner-demo banner-success">
+                            ✅ 작업이 성공적으로 완료되었습니다.
+                        </div>
+                    </div>
+                    <div class="component-description">
+                        성공적인 작업 완료나 긍정적인 결과를 표시합니다.
+                    </div>
+                </div>
+
+                <div class="component-item">
+                    <div class="component-title">경고 배너</div>
+                    <div class="component-demo">
+                        <div class="banner-demo banner-warning">
+                            ⚠️ 주의가 필요한 상황입니다.
+                        </div>
+                    </div>
+                    <div class="component-description">
+                        사용자의 주의를 끌어야 하는 상황을 표시합니다.
+                    </div>
+                </div>
+
+                <div class="component-item">
+                    <div class="component-title">오류 배너</div>
+                    <div class="component-demo">
+                        <div class="banner-demo banner-error">
+                            ❌ 오류가 발생했습니다.
+                        </div>
+                    </div>
+                    <div class="component-description">
+                        오류나 문제 상황을 표시합니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 브레드크럼 -->
+        <section class="section">
+            <h2 class="section-title">브레드크럼</h2>
+            
+            <div class="component-grid">
+                <div class="component-item">
+                    <div class="component-title">기본 브레드크럼</div>
+                    <div class="component-demo">
+                        <nav class="breadcrumb">
+                            <a href="#" class="breadcrumb-item">홈</a>
+                            <span class="breadcrumb-separator">/</span>
+                            <a href="#" class="breadcrumb-item">카테고리</a>
+                            <span class="breadcrumb-separator">/</span>
+                            <span class="breadcrumb-item active">현재 페이지</span>
+                        </nav>
+                    </div>
+                    <div class="component-description">
+                        사용자의 현재 위치를 표시하고 네비게이션을 돕습니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 페이지네이션 -->
+        <section class="section">
+            <h2 class="section-title">페이지네이션</h2>
+            
+            <div class="component-grid">
+                <div class="component-item">
+                    <div class="component-title">기본 페이지네이션</div>
+                    <div class="component-demo">
+                        <div class="pagination-demo">
+                            <button class="pagination-btn disabled">‹</button>
+                            <button class="pagination-btn active">1</button>
+                            <button class="pagination-btn">2</button>
+                            <button class="pagination-btn">3</button>
+                            <button class="pagination-btn">4</button>
+                            <button class="pagination-btn">5</button>
+                            <button class="pagination-btn">›</button>
+                        </div>
+                    </div>
+                    <div class="component-description">
+                        긴 목록을 여러 페이지로 나누어 표시할 때 사용합니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 탭 -->
+        <section class="section">
+            <h2 class="section-title">탭</h2>
+            
+            <div class="component-grid">
+                <div class="component-item">
+                    <div class="component-title">기본 탭</div>
+                    <div class="component-demo">
+                        <div class="tabs-demo">
+                            <div class="tabs-list">
+                                <button class="tab-item active">첫 번째</button>
+                                <button class="tab-item">두 번째</button>
+                                <button class="tab-item">세 번째</button>
+                            </div>
+                        </div>
+                        <div style="padding: var(--spacing-4); background: var(--bg-secondary); border-radius: var(--radius-md); font-size: var(--font-size-sm); color: var(--text-secondary);">
+                            탭 콘텐츠가 여기에 표시됩니다.
+                        </div>
+                    </div>
+                    <div class="component-description">
+                        관련된 콘텐츠를 그룹화하여 표시할 때 사용합니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 아코디언 -->
+        <section class="section">
+            <h2 class="section-title">아코디언</h2>
+            
+            <div class="component-grid">
+                <div class="component-item">
+                    <div class="component-title">기본 아코디언</div>
+                    <div class="component-demo">
+                        <div class="accordion-demo">
+                            <div class="accordion-item">
+                                <div class="accordion-header">
+                                    <span>첫 번째 섹션</span>
+                                    <span>▼</span>
+                                </div>
+                                <div class="accordion-content">
+                                    이곳에 아코디언의 내용이 표시됩니다. 사용자가 헤더를 클릭하면 내용이 펼쳐지거나 접힙니다.
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <div class="accordion-header">
+                                    <span>두 번째 섹션</span>
+                                    <span>▼</span>
+                                </div>
+                                <div class="accordion-content">
+                                    여러 섹션을 가진 콘텐츠를 효율적으로 표시할 때 사용합니다.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-description">
+                        여러 섹션의 콘텐츠를 접었다 펼 수 있게 표시합니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 캐러셀 -->
+        <section class="section">
+            <h2 class="section-title">캐러셀</h2>
+            
+            <div class="component-grid">
+                <div class="component-item">
+                    <div class="component-title">기본 캐러셀</div>
+                    <div class="component-demo">
+                        <div class="carousel-demo">
+                            <button class="carousel-nav carousel-prev">‹</button>
+                            <div>슬라이드 1</div>
+                            <button class="carousel-nav carousel-next">›</button>
+                            <div class="carousel-dots">
+                                <button class="carousel-dot active"></button>
+                                <button class="carousel-dot"></button>
+                                <button class="carousel-dot"></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-description">
+                        여러 콘텐츠를 순환하며 표시하는 슬라이더입니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 프로그레스 -->
+        <section class="section">
+            <h2 class="section-title">프로그레스</h2>
+            
+            <div class="component-grid">
+                <div class="component-item">
+                    <div class="component-title">기본 프로그레스</div>
+                    <div class="component-demo">
+                        <div style="margin-bottom: var(--spacing-3);">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-2); font-size: var(--font-size-sm);">
+                                <span>진행률</span>
+                                <span style="font-weight: var(--font-weight-bold); color: var(--color-primary-600);">75%</span>
+                            </div>
+                            <div class="progress-demo">
+                                <div class="progress-bar" style="width: 75%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-description">
+                        작업의 진행 상황을 시각적으로 표시합니다.
+                    </div>
+                </div>
+
+                <div class="component-item">
+                    <div class="component-title">상태별 프로그레스</div>
+                    <div class="component-demo">
+                        <div style="display: flex; flex-direction: column; gap: var(--spacing-3);">
+                            <div class="progress-demo progress-success">
+                                <div class="progress-bar" style="width: 90%;"></div>
+                            </div>
+                            <div class="progress-demo progress-warning">
+                                <div class="progress-bar" style="width: 60%;"></div>
+                            </div>
+                            <div class="progress-demo progress-error">
+                                <div class="progress-bar" style="width: 30%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-description">
+                        상태에 따라 다른 색상으로 표시할 수 있습니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 툴팁 -->
+        <section class="section">
+            <h2 class="section-title">툴팁</h2>
+            
+            <div class="component-grid">
+                <div class="component-item">
+                    <div class="component-title">기본 툴팁</div>
+                    <div class="component-demo">
+                        <div class="tooltip-demo">
+                            <button class="btn btn-outline">호버하세요</button>
+                            <div class="tooltip">이것은 툴팁입니다</div>
+                        </div>
+                    </div>
+                    <div class="component-description">
+                        요소에 대한 추가 정보를 표시합니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 스피너 -->
+        <section class="section">
+            <h2 class="section-title">스피너</h2>
+            
+            <div class="component-grid">
+                <div class="component-item">
+                    <div class="component-title">크기별 스피너</div>
+                    <div class="component-demo">
+                        <div class="spinner-demo">
+                            <div class="spinner spinner-sm"></div>
+                            <div class="spinner"></div>
+                            <div class="spinner spinner-lg"></div>
+                        </div>
+                    </div>
+                    <div class="component-description">
+                        로딩 상태를 표시하는 회전 애니메이션입니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 토글 스위치 -->
+        <section class="section">
+            <h2 class="section-title">토글 스위치</h2>
+            
+            <div class="component-grid">
+                <div class="component-item">
+                    <div class="component-title">기본 토글</div>
+                    <div class="component-demo">
+                        <div style="display: flex; align-items: center; gap: var(--spacing-3);">
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span style="font-size: var(--font-size-sm);">알림 받기</span>
+                        </div>
+                    </div>
+                    <div class="component-description">
+                        설정을 켜거나 끌 때 사용하는 스위치입니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 단계 표시기 -->
+        <section class="section">
+            <h2 class="section-title">단계 표시기</h2>
+            
+            <div class="component-grid">
+                <div class="component-item">
+                    <div class="component-title">기본 단계 표시기</div>
+                    <div class="component-demo">
+                        <div class="step-indicator">
+                            <div class="step completed">1</div>
+                            <div class="step-line completed"></div>
+                            <div class="step completed">2</div>
+                            <div class="step-line completed"></div>
+                            <div class="step active">3</div>
+                            <div class="step-line"></div>
+                            <div class="step">4</div>
+                        </div>
+                    </div>
+                    <div class="component-description">
+                        다단계 프로세스의 현재 진행 상황을 표시합니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="../assets/js/app.js"></script>
+    <script>
+    </script>
+</body>
+</html>

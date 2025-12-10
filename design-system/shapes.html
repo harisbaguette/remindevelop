@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>형태 - 디자인 시스템</title>
+    
+    <link rel="stylesheet" href="krds.css">
+    <style>
+        
+        body {
+            background: var(--color-gray-50);
+        }
+
+        .ds-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-6);
+        }
+
+        .ds-header {
+            background: white;
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-8);
+            margin-bottom: var(--spacing-6);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .ds-title {
+            font-size: 40px;
+            font-weight: var(--font-weight-bold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .ds-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--color-gray-600);
+            margin-bottom: var(--spacing-6);
+        }
+
+        .ds-actions {
+            display: flex;
+            gap: var(--spacing-3);
+        }
+
+        /* 네비게이션 스타일 */
+        .ds-nav {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-xl);
+            margin-bottom: var(--spacing-6);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .nav-container {
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .nav-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-4) var(--spacing-5);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: var(--font-weight-medium);
+            font-size: var(--font-size-sm);
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+            transition: all var(--transition-base);
+        }
+
+        .nav-item:hover {
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+        }
+
+        .nav-item.active {
+            color: var(--color-primary-600);
+            border-bottom-color: var(--color-primary-600);
+            background: var(--color-primary-50);
+        }
+
+        .section {
+            background: white;
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-8);
+            margin-bottom: var(--spacing-6);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .section-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-6);
+            padding-bottom: var(--spacing-3);
+            border-bottom: 2px solid var(--color-primary-600);
+        }
+
+        .shape-demo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-6);
+        }
+
+        .shape-item {
+            text-align: center;
+            padding: var(--spacing-6);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+        }
+
+        .shape-visual {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto var(--spacing-4);
+            background: var(--color-primary-600);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .shape-label {
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-gray-700);
+            margin-bottom: var(--spacing-2);
+        }
+
+        .shape-specs {
+            font-size: var(--font-size-xs);
+            color: var(--color-gray-500);
+            font-family: monospace;
+        }
+
+        .radius-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-4);
+        }
+
+        .radius-item {
+            text-align: center;
+            padding: var(--spacing-4);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+        }
+
+        .radius-visual {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto var(--spacing-3);
+            background: var(--color-primary-100);
+            border: 2px solid var(--color-primary-600);
+        }
+
+        .usage-examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-6);
+        }
+
+        .usage-item {
+            padding: var(--spacing-5);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+        }
+
+        .usage-title {
+            font-size: var(--font-size-md);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-3);
+        }
+    </style>
+</head>
+<body>
+    <div id="toast"></div>
+
+    <div class="ds-container">
+        <!-- 헤더 -->
+        <div class="ds-header">
+            <h1 class="ds-title">형태</h1>
+            <p class="ds-subtitle">
+                일관된 형태 언어로 브랜드의 성격과 사용자 경험을 표현합니다
+            </p>
+            <div class="ds-actions">
+            </div>
+        </div>
+
+        <!-- 네비게이션 -->
+        <nav class="ds-nav">
+            <div class="nav-container">
+                <a href="index.html" class="nav-item">개요</a>
+                <a href="colors.html" class="nav-item">색상</a>
+                <a href="typography.html" class="nav-item">타이포그래피</a>
+                <a href="shapes.html" class="nav-item active">형태</a>
+                <a href="layout.html" class="nav-item">레이아웃</a>
+                <a href="icons.html" class="nav-item">아이콘</a>
+                <a href="elevation.html" class="nav-item">엘리베이션</a>
+                <a href="components.html" class="nav-item">컴포넌트</a>
+                <a href="patterns.html" class="nav-item">기본 패턴</a>
+                <a href="services.html" class="nav-item">서비스 패턴</a>
+            </div>
+        </nav>
+
+        <!-- 형태가 주는 이미지 -->
+        <section class="section">
+            <h2 class="section-title">형태가 주는 이미지</h2>
+            
+            <div class="shape-demo">
+                <div class="shape-item">
+                    <div class="shape-visual" style="border-radius: 0px;">□</div>
+                    <div class="shape-label">각진 형태</div>
+                    <div class="shape-specs">border-radius: 0px</div>
+                    <p style="font-size: var(--font-size-xs); color: var(--color-gray-600); margin-top: var(--spacing-2);">
+                        정확하고 전문적인 느낌
+                    </p>
+                </div>
+
+                <div class="shape-item">
+                    <div class="shape-visual" style="border-radius: 2px;">▢</div>
+                    <div class="shape-label">약간 둥근 형태</div>
+                    <div class="shape-specs">border-radius: 2px</div>
+                    <p style="font-size: var(--font-size-xs); color: var(--color-gray-600); margin-top: var(--spacing-2);">
+                        부드럽지만 정확한 느낌
+                    </p>
+                </div>
+
+                <div class="shape-item">
+                    <div class="shape-visual" style="border-radius: 4px;">▢</div>
+                    <div class="shape-label">둥근 형태</div>
+                    <div class="shape-specs">border-radius: 4px</div>
+                    <p style="font-size: var(--font-size-xs); color: var(--color-gray-600); margin-top: var(--spacing-2);">
+                        친근하고 현대적인 느낌
+                    </p>
+                </div>
+
+                <div class="shape-item">
+                    <div class="shape-visual" style="border-radius: 8px;">▢</div>
+                    <div class="shape-label">매우 둥근 형태</div>
+                    <div class="shape-specs">border-radius: 8px</div>
+                    <p style="font-size: var(--font-size-xs); color: var(--color-gray-600); margin-top: var(--spacing-2);">
+                        부드럽고 친근한 느낌
+                    </p>
+                </div>
+
+                <div class="shape-item">
+                    <div class="shape-visual" style="border-radius: 12px;">▢</div>
+                    <div class="shape-label">매우 부드러운 형태</div>
+                    <div class="shape-specs">border-radius: 12px</div>
+                    <p style="font-size: var(--font-size-xs); color: var(--color-gray-600); margin-top: var(--spacing-2);">
+                        매우 부드럽고 현대적인 느낌
+                    </p>
+                </div>
+
+                <div class="shape-item">
+                    <div class="shape-visual" style="border-radius: 16px;">▢</div>
+                    <div class="shape-label">극도로 부드러운 형태</div>
+                    <div class="shape-specs">border-radius: 16px</div>
+                    <p style="font-size: var(--font-size-xs); color: var(--color-gray-600); margin-top: var(--spacing-2);">
+                        극도로 부드럽고 세련된 느낌
+                    </p>
+                </div>
+
+                <div class="shape-item">
+                    <div class="shape-visual" style="border-radius: 50%;">○</div>
+                    <div class="shape-label">원형</div>
+                    <div class="shape-specs">border-radius: 50%</div>
+                    <p style="font-size: var(--font-size-xs); color: var(--color-gray-600); margin-top: var(--spacing-2);">
+                        완전하고 조화로운 느낌
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 래디어스 -->
+        <section class="section">
+            <h2 class="section-title">래디어스</h2>
+            
+            <div class="radius-grid">
+                <div class="radius-item">
+                    <div class="radius-visual" style="border-radius: 0px;"></div>
+                    <div class="shape-label">None</div>
+                    <div class="shape-specs">0px</div>
+                </div>
+
+                <div class="radius-item">
+                    <div class="radius-visual" style="border-radius: 2px;"></div>
+                    <div class="shape-label">XS</div>
+                    <div class="shape-specs">2px</div>
+                </div>
+
+                <div class="radius-item">
+                    <div class="radius-visual" style="border-radius: 4px;"></div>
+                    <div class="shape-label">SM</div>
+                    <div class="shape-specs">4px</div>
+                </div>
+
+                <div class="radius-item">
+                    <div class="radius-visual" style="border-radius: 6px;"></div>
+                    <div class="shape-label">Base</div>
+                    <div class="shape-specs">6px</div>
+                </div>
+
+                <div class="radius-item">
+                    <div class="radius-visual" style="border-radius: 8px;"></div>
+                    <div class="shape-label">MD</div>
+                    <div class="shape-specs">8px</div>
+                </div>
+
+                <div class="radius-item">
+                    <div class="radius-visual" style="border-radius: 12px;"></div>
+                    <div class="shape-label">LG</div>
+                    <div class="shape-specs">12px</div>
+                </div>
+
+                <div class="radius-item">
+                    <div class="radius-visual" style="border-radius: 16px;"></div>
+                    <div class="shape-label">XL</div>
+                    <div class="shape-specs">16px</div>
+                </div>
+
+                <div class="radius-item">
+                    <div class="radius-visual" style="border-radius: 20px;"></div>
+                    <div class="shape-label">2XL</div>
+                    <div class="shape-specs">20px</div>
+                </div>
+
+                <div class="radius-item">
+                    <div class="radius-visual" style="border-radius: 24px;"></div>
+                    <div class="shape-label">3XL</div>
+                    <div class="shape-specs">24px</div>
+                </div>
+
+                <div class="radius-item">
+                    <div class="radius-visual" style="border-radius: 50%;"></div>
+                    <div class="shape-label">Full</div>
+                    <div class="shape-specs">50%</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 래디어스 적용 -->
+        <section class="section">
+            <h2 class="section-title">래디어스 적용</h2>
+            
+            <div class="usage-examples">
+                <div class="usage-item">
+                    <div class="usage-title">버튼</div>
+                    <div style="display: flex; gap: var(--spacing-3); margin-bottom: var(--spacing-4);">
+                        <button class="btn btn-primary" style="border-radius: 4px;">작은 래디어스</button>
+                        <button class="btn btn-primary" style="border-radius: 8px;">기본 래디어스</button>
+                        <button class="btn btn-primary" style="border-radius: 12px;">큰 래디어스</button>
+                    </div>
+                    <p style="font-size: var(--font-size-sm); color: var(--color-gray-600);">
+                        버튼은 4px~12px 범위의 래디어스를 사용하여 적절한 시각적 무게감을 제공합니다.
+                    </p>
+                </div>
+
+                <div class="usage-item">
+                    <div class="usage-title">카드</div>
+                    <div style="display: flex; gap: var(--spacing-3); margin-bottom: var(--spacing-4);">
+                        <div style="width: 80px; height: 60px; background: var(--color-primary-100); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--color-primary-700);">기본</div>
+                        <div style="width: 80px; height: 60px; background: var(--color-primary-100); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--color-primary-700);">큰</div>
+                        <div style="width: 80px; height: 60px; background: var(--color-primary-100); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--color-primary-700);">매우 큰</div>
+                    </div>
+                    <p style="font-size: var(--font-size-sm); color: var(--color-gray-600);">
+                        카드는 6px~16px 범위의 래디어스를 사용하여 콘텐츠의 중요도에 따라 조절합니다.
+                    </p>
+                </div>
+
+                <div class="usage-item">
+                    <div class="usage-title">입력 필드</div>
+                    <div style="display: flex; gap: var(--spacing-3); margin-bottom: var(--spacing-4);">
+                        <input type="text" class="input" placeholder="기본" style="border-radius: 6px; width: 100px;">
+                        <input type="text" class="input" placeholder="큰" style="border-radius: 8px; width: 100px;">
+                    </div>
+                    <p style="font-size: var(--font-size-sm); color: var(--color-gray-600);">
+                        입력 필드는 6px~8px 범위의 래디어스를 사용하여 사용성과 시각적 일관성을 유지합니다.
+                    </p>
+                </div>
+
+                <div class="usage-item">
+                    <div class="usage-title">아바타</div>
+                    <div style="display: flex; gap: var(--spacing-3); margin-bottom: var(--spacing-4);">
+                        <div style="width: 40px; height: 40px; background: var(--color-primary-600); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">김</div>
+                        <div style="width: 40px; height: 40px; background: var(--color-primary-600); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">김</div>
+                        <div style="width: 40px; height: 40px; background: var(--color-primary-600); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">김</div>
+                    </div>
+                    <p style="font-size: var(--font-size-sm); color: var(--color-gray-600);">
+                        아바타는 4px~50% 범위의 래디어스를 사용하여 다양한 스타일을 지원합니다.
+                    </p>
+                </div>
+
+                <div class="usage-item">
+                    <div class="usage-title">모달</div>
+                    <div style="display: flex; gap: var(--spacing-3); margin-bottom: var(--spacing-4);">
+                        <div style="width: 80px; height: 60px; background: var(--color-gray-100); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--color-gray-700);">기본</div>
+                        <div style="width: 80px; height: 60px; background: var(--color-gray-100); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--color-gray-700);">큰</div>
+                        <div style="width: 80px; height: 60px; background: var(--color-gray-100); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--color-gray-700);">매우 큰</div>
+                    </div>
+                    <p style="font-size: var(--font-size-sm); color: var(--color-gray-600);">
+                        모달은 8px~20px 범위의 래디어스를 사용하여 중요도와 사용 맥락에 따라 조절합니다.
+                    </p>
+                </div>
+
+                <div class="usage-item">
+                    <div class="usage-title">배지</div>
+                    <div style="display: flex; gap: var(--spacing-3); margin-bottom: var(--spacing-4);">
+                        <span class="badge badge-primary" style="border-radius: 4px;">기본</span>
+                        <span class="badge badge-primary" style="border-radius: 8px;">큰</span>
+                        <span class="badge badge-primary" style="border-radius: 12px;">매우 큰</span>
+                    </div>
+                    <p style="font-size: var(--font-size-sm); color: var(--color-gray-600);">
+                        배지는 4px~12px 범위의 래디어스를 사용하여 정보의 중요도에 따라 시각적 강조를 조절합니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="../assets/js/app.js"></script>
+    <script>
+    </script>
+</body>
+</html>

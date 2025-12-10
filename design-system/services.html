@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>서비스 패턴 - 디자인 시스템</title>
+    
+    <link rel="stylesheet" href="krds.css">
+    <style>
+        
+        body {
+            background: var(--color-gray-50);
+        }
+
+        .ds-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-6);
+        }
+
+        .ds-header {
+            background: white;
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-8);
+            margin-bottom: var(--spacing-6);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .ds-title {
+            font-size: 40px;
+            font-weight: var(--font-weight-bold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .ds-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--color-gray-600);
+            margin-bottom: var(--spacing-6);
+        }
+
+        .ds-actions {
+            display: flex;
+            gap: var(--spacing-3);
+        }
+
+        /* 네비게이션 스타일 */
+        .ds-nav {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-xl);
+            margin-bottom: var(--spacing-6);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .nav-container {
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .nav-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-4) var(--spacing-5);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: var(--font-weight-medium);
+            font-size: var(--font-size-sm);
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+            transition: all var(--transition-base);
+        }
+
+        .nav-item:hover {
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+        }
+
+        .nav-item.active {
+            color: var(--color-primary-600);
+            border-bottom-color: var(--color-primary-600);
+            background: var(--color-primary-50);
+        }
+
+        .section {
+            background: white;
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-8);
+            margin-bottom: var(--spacing-6);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .section-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-6);
+            padding-bottom: var(--spacing-3);
+            border-bottom: 2px solid var(--color-primary-600);
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: var(--spacing-6);
+        }
+
+        .service-item {
+            padding: var(--spacing-6);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+        }
+
+        .service-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .service-demo {
+            margin-bottom: var(--spacing-4);
+        }
+
+        .service-description {
+            font-size: var(--font-size-sm);
+            color: var(--color-gray-600);
+            line-height: 1.5;
+        }
+
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: var(--spacing-6);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: var(--spacing-6);
+        }
+
+        .login-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-2);
+        }
+
+        .login-subtitle {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-4);
+        }
+
+        .form-label {
+            display: block;
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-2);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: var(--spacing-3);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            transition: all var(--transition-base);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--color-primary-500);
+            box-shadow: 0 0 0 3px var(--color-primary-50);
+        }
+
+        .search-bar {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .search-input {
+            flex: 1;
+            padding: var(--spacing-3);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+        }
+
+        .search-button {
+            padding: var(--spacing-3) var(--spacing-4);
+            background: var(--color-primary-600);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .search-button:hover {
+            background: var(--color-primary-700);
+        }
+
+        .search-filters {
+            display: flex;
+            gap: var(--spacing-3);
+            margin-bottom: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: var(--spacing-2) var(--spacing-3);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            background: var(--bg-primary);
+        }
+
+        .search-results {
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+
+        .search-result-item {
+            padding: var(--spacing-4);
+            border-bottom: 1px solid var(--border-default);
+            transition: background var(--transition-base);
+        }
+
+        .search-result-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-title {
+            font-size: var(--font-size-md);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-1);
+        }
+
+        .result-description {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .result-meta {
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
+            margin-top: var(--spacing-2);
+        }
+
+        .application-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-section {
+            margin-bottom: var(--spacing-6);
+            padding: var(--spacing-5);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+        }
+
+        .form-section-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-4);
+            padding-bottom: var(--spacing-2);
+            border-bottom: 1px solid var(--border-default);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-4);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        .textarea {
+            width: 100%;
+            padding: var(--spacing-3);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+
+        .textarea:focus {
+            outline: none;
+            border-color: var(--color-primary-500);
+            box-shadow: 0 0 0 3px var(--color-primary-50);
+        }
+
+        .info-card {
+            padding: var(--spacing-5);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-3);
+        }
+
+        .info-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+        }
+
+        .info-status {
+            padding: var(--spacing-1) var(--spacing-3);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .status-active {
+            background: var(--color-success-100);
+            color: var(--color-success-700);
+        }
+
+        .status-pending {
+            background: var(--color-warning-100);
+            color: var(--color-warning-700);
+        }
+
+        .status-completed {
+            background: var(--color-info-100);
+            color: var(--color-info-700);
+        }
+
+        .info-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-3);
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
+            margin-bottom: var(--spacing-1);
+        }
+
+        .info-value {
+            font-size: var(--font-size-sm);
+            color: var(--text-primary);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .visit-schedule {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-4);
+        }
+
+        .schedule-item {
+            padding: var(--spacing-4);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+        }
+
+        .schedule-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-2);
+        }
+
+        .schedule-date {
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+        }
+
+        .schedule-time {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .schedule-content {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div id="toast"></div>
+
+    <div class="ds-container">
+        <!-- 헤더 -->
+        <div class="ds-header">
+            <h1 class="ds-title">서비스 패턴</h1>
+            <p class="ds-subtitle">
+                특정 서비스 상황에서 사용되는 UI 패턴들입니다
+            </p>
+            <div class="ds-actions">
+            </div>
+        </div>
+
+        <!-- 네비게이션 -->
+        <nav class="ds-nav">
+            <div class="nav-container">
+                <a href="index.html" class="nav-item">개요</a>
+                <a href="colors.html" class="nav-item">색상</a>
+                <a href="typography.html" class="nav-item">타이포그래피</a>
+                <a href="shapes.html" class="nav-item">형태</a>
+                <a href="layout.html" class="nav-item">레이아웃</a>
+                <a href="icons.html" class="nav-item">아이콘</a>
+                <a href="elevation.html" class="nav-item">엘리베이션</a>
+                <a href="components.html" class="nav-item">컴포넌트</a>
+                <a href="patterns.html" class="nav-item">기본 패턴</a>
+                <a href="services.html" class="nav-item active">서비스 패턴</a>
+            </div>
+        </nav>
+
+        <!-- 로그인 -->
+        <section class="section">
+            <h2 class="section-title">로그인</h2>
+            
+            <div class="service-grid">
+                <div class="service-item">
+                    <div class="service-title">기본 로그인</div>
+                    <div class="service-demo">
+                        <div class="login-form">
+                            <div class="login-header">
+                                <h3 class="login-title">로그인</h3>
+                                <p class="login-subtitle">계정에 로그인하세요</p>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">사번</label>
+                                <input type="text" class="form-input" placeholder="사번을 입력하세요">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">비밀번호</label>
+                                <input type="password" class="form-input" placeholder="비밀번호를 입력하세요">
+                            </div>
+                            <div class="form-group">
+                                <label style="display: flex; align-items: center; gap: var(--spacing-2); font-size: var(--font-size-sm);">
+                                    <input type="checkbox">
+                                    로그인 상태 유지
+                                </label>
+                            </div>
+                            <button class="btn btn-primary" style="width: 100%;">로그인</button>
+                        </div>
+                    </div>
+                    <div class="service-description">
+                        기본적인 사번과 비밀번호를 통한 로그인 패턴입니다.
+                    </div>
+                </div>
+
+                <div class="service-item">
+                    <div class="service-title">소셜 로그인</div>
+                    <div class="service-demo">
+                        <div class="login-form">
+                            <div class="login-header">
+                                <h3 class="login-title">간편 로그인</h3>
+                                <p class="login-subtitle">소셜 계정으로 로그인하세요</p>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: var(--spacing-3);">
+                                <button class="btn btn-outline" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: var(--spacing-2);">
+                                    <span>🔑</span>
+                                    사번으로 로그인
+                                </button>
+                                <button class="btn btn-outline" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: var(--spacing-2);">
+                                    <span>📧</span>
+                                    이메일로 로그인
+                                </button>
+                                <button class="btn btn-outline" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: var(--spacing-2);">
+                                    <span>📱</span>
+                                    휴대폰으로 로그인
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="service-description">
+                        다양한 로그인 방식을 제공하는 패턴입니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 검색 -->
+        <section class="section">
+            <h2 class="section-title">검색</h2>
+            
+            <div class="service-grid">
+                <div class="service-item">
+                    <div class="service-title">기본 검색</div>
+                    <div class="service-demo">
+                        <div class="search-bar">
+                            <input type="text" class="search-input" placeholder="검색어를 입력하세요">
+                            <button class="search-button">검색</button>
+                        </div>
+                        <div class="search-filters">
+                            <select class="filter-select">
+                                <option>전체</option>
+                                <option>제목</option>
+                                <option>내용</option>
+                                <option>작성자</option>
+                            </select>
+                            <select class="filter-select">
+                                <option>최신순</option>
+                                <option>인기순</option>
+                                <option>관련도순</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="service-description">
+                        기본적인 검색 입력과 필터 옵션을 제공하는 패턴입니다.
+                    </div>
+                </div>
+
+                <div class="service-item">
+                    <div class="service-title">검색 결과</div>
+                    <div class="service-demo">
+                        <div class="search-results">
+                            <div class="search-result-item">
+                                <div class="result-title">2024년 업무 계획서</div>
+                                <div class="result-description">
+                                    올해의 주요 업무 계획과 목표를 정리한 문서입니다. 각 부서별 세부 계획이 포함되어 있습니다.
+                                </div>
+                                <div class="result-meta">작성자: 김관리 | 2024-01-15 | 조회수: 245</div>
+                            </div>
+                            <div class="search-result-item">
+                                <div class="result-title">신규 프로젝트 제안서</div>
+                                <div class="result-description">
+                                    새로운 프로젝트에 대한 제안서입니다. 예산과 일정이 상세히 기재되어 있습니다.
+                                </div>
+                                <div class="result-meta">작성자: 이영희 | 2024-01-14 | 조회수: 189</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="service-description">
+                        검색 결과를 목록 형태로 표시하는 패턴입니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 신청 -->
+        <section class="section">
+            <h2 class="section-title">신청</h2>
+            
+            <div class="service-grid">
+                <div class="service-item">
+                    <div class="service-title">기본 신청서</div>
+                    <div class="service-demo">
+                        <div class="application-form">
+                            <div class="form-section">
+                                <div class="form-section-title">기본 정보</div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">이름 *</label>
+                                        <input type="text" class="form-input" placeholder="이름을 입력하세요">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">부서 *</label>
+                                        <select class="form-input">
+                                            <option>부서를 선택하세요</option>
+                                            <option>개발팀</option>
+                                            <option>마케팅팀</option>
+                                            <option>경영지원팀</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">신청 사유 *</label>
+                                    <textarea class="textarea" placeholder="신청 사유를 상세히 입력하세요"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-section">
+                                <div class="form-section-title">추가 정보</div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">희망 일정</label>
+                                        <input type="date" class="form-input">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">예산</label>
+                                        <input type="number" class="form-input" placeholder="예산을 입력하세요">
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: var(--spacing-3); justify-content: flex-end;">
+                                <button class="btn btn-outline">임시저장</button>
+                                <button class="btn btn-primary">신청하기</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="service-description">
+                        다양한 정보를 입력받는 신청서 패턴입니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 정보 확인 -->
+        <section class="section">
+            <h2 class="section-title">정보 확인</h2>
+            
+            <div class="service-grid">
+                <div class="service-item">
+                    <div class="service-title">상세 정보 카드</div>
+                    <div class="service-demo">
+                        <div class="info-card">
+                            <div class="info-header">
+                                <div class="info-title">프로젝트 정보</div>
+                                <div class="info-status status-active">진행중</div>
+                            </div>
+                            <div class="info-details">
+                                <div class="info-item">
+                                    <div class="info-label">프로젝트명</div>
+                                    <div class="info-value">웹사이트 리뉴얼</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">담당자</div>
+                                    <div class="info-value">김개발</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">시작일</div>
+                                    <div class="info-value">2024-01-01</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">완료일</div>
+                                    <div class="info-value">2024-03-31</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">진행률</div>
+                                    <div class="info-value">65%</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">예산</div>
+                                    <div class="info-value">5,000,000원</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="service-description">
+                        상세한 정보를 구조화된 형태로 표시하는 패턴입니다.
+                    </div>
+                </div>
+
+                <div class="service-item">
+                    <div class="service-title">상태별 정보</div>
+                    <div class="service-demo">
+                        <div style="display: flex; flex-direction: column; gap: var(--spacing-3);">
+                            <div class="info-card">
+                                <div class="info-header">
+                                    <div class="info-title">승인 대기</div>
+                                    <div class="info-status status-pending">대기중</div>
+                                </div>
+                                <div class="info-details">
+                                    <div class="info-item">
+                                        <div class="info-label">신청일</div>
+                                        <div class="info-value">2024-01-15</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">처리 예정일</div>
+                                        <div class="info-value">2024-01-20</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="info-card">
+                                <div class="info-header">
+                                    <div class="info-title">완료된 작업</div>
+                                    <div class="info-status status-completed">완료</div>
+                                </div>
+                                <div class="info-details">
+                                    <div class="info-item">
+                                        <div class="info-label">완료일</div>
+                                        <div class="info-value">2024-01-10</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">처리자</div>
+                                        <div class="info-value">이관리</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="service-description">
+                        상태에 따라 다른 스타일로 정보를 표시하는 패턴입니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 방문 -->
+        <section class="section">
+            <h2 class="section-title">방문</h2>
+            
+            <div class="service-grid">
+                <div class="service-item">
+                    <div class="service-title">방문 일정</div>
+                    <div class="service-demo">
+                        <div class="visit-schedule">
+                            <div class="schedule-item">
+                                <div class="schedule-header">
+                                    <div class="schedule-date">2024년 1월 20일</div>
+                                    <div class="schedule-time">14:00 - 16:00</div>
+                                </div>
+                                <div class="schedule-content">
+                                    <strong>고객사 방문</strong><br>
+                                    ABC 회사와의 프로젝트 논의 및 계약 체결
+                                </div>
+                            </div>
+                            <div class="schedule-item">
+                                <div class="schedule-header">
+                                    <div class="schedule-date">2024년 1월 22일</div>
+                                    <div class="schedule-time">10:00 - 12:00</div>
+                                </div>
+                                <div class="schedule-content">
+                                    <strong>현장 점검</strong><br>
+                                    신규 사업장 현장 점검 및 안전 점검
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="service-description">
+                        방문 일정을 시간순으로 정리하여 표시하는 패턴입니다.
+                    </div>
+                </div>
+
+                <div class="service-item">
+                    <div class="service-title">방문 신청</div>
+                    <div class="service-demo">
+                        <div class="application-form">
+                            <div class="form-section">
+                                <div class="form-section-title">방문 정보</div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">방문 목적 *</label>
+                                        <select class="form-input">
+                                            <option>목적을 선택하세요</option>
+                                            <option>고객사 방문</option>
+                                            <option>현장 점검</option>
+                                            <option>회의</option>
+                                            <option>기타</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">방문 대상 *</label>
+                                        <input type="text" class="form-input" placeholder="방문 대상을 입력하세요">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">방문일 *</label>
+                                        <input type="date" class="form-input">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">방문 시간 *</label>
+                                        <input type="time" class="form-input">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">방문 내용 *</label>
+                                    <textarea class="textarea" placeholder="방문 목적과 내용을 상세히 입력하세요"></textarea>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: var(--spacing-3); justify-content: flex-end;">
+                                <button class="btn btn-outline">취소</button>
+                                <button class="btn btn-primary">신청하기</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="service-description">
+                        방문 신청을 위한 정보 입력 폼 패턴입니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="../assets/js/app.js"></script>
+    <script>
+    </script>
+</body>
+</html>

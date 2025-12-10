@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
-import { ExternalLink, Check, Trash2, Archive, Clock, Tag, RefreshCw } from 'lucide-react'
+import { Trash2, RefreshCw, Edit2 } from 'lucide-react'
+import { toast } from 'sonner'
 
 type Link = {
     id: number
@@ -10,6 +11,8 @@ type Link = {
     title: string
     description: string
     category: string
+    type?: string
+    image_url?: string
     created_at: string
 }
 
@@ -22,25 +25,27 @@ interface LinkListProps {
 export default function LinkList({ status, keyProp, searchQuery = '' }: LinkListProps) {
     const [links, setLinks] = useState<Link[]>([])
     const [loading, setLoading] = useState(true)
-
-    const fetchLinks = async () => {
-        setLoading(true)
-        const { data: { user } } = await supabase.auth.getUser()
-        if (!user) return
-
-        const { data, error } = await supabase
-            .from('links')
-            .select('*')
-            .eq('user_id', user.id)
-            .eq('status', status)
-            .order('created_at', { ascending: false })
-
-        if (error) console.error('Error fetching links:', error)
-        else setLinks(data || [])
-        setLoading(false)
-    }
+    const [editingLink, setEditingLink] = useState<Link | null>(null)
+    const [editForm, setEditForm] = useState({ title: '', description: '', category: '' })
 
     useEffect(() => {
+        const fetchLinks = async () => {
+            setLoading(true)
+            const { data: { user } } = await supabase.auth.getUser()
+            if (!user) return
+
+            const { data, error } = await supabase
+                .from('links')
+                .select('*')
+                .eq('user_id', user.id)
+                .eq('status', status)
+                .order('created_at', { ascending: false })
+
+            if (error) console.error('Error fetching links:', error)
+            else setLinks(data || [])
+            setLoading(false)
+        }
+
         fetchLinks()
     }, [status, keyProp])
 
@@ -66,6 +71,49 @@ export default function LinkList({ status, keyProp, searchQuery = '' }: LinkList
         }
     }
 
+    const emptyTrash = async () => {
+        if (!confirm('휴지통을 비우시겠습니까?')) return
+
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) return
+
+        const { error } = await supabase
+            .from('links')
+            .delete()
+            .eq('status', 'trash')
+            .eq('user_id', user.id)
+
+        if (!error) {
+            setLinks([])
+        }
+    }
+
+    const startEdit = (link: Link) => {
+        setEditingLink(link)
+        setEditForm({ title: link.title || '', description: link.description || '', category: link.category || '' })
+    }
+
+    const saveEdit = async () => {
+        if (!editingLink) return
+
+        const { error } = await supabase
+            .from('links')
+            .update({
+                title: editForm.title,
+                description: editForm.description,
+                category: editForm.category
+            })
+            .eq('id', editingLink.id)
+
+        if (!error) {
+            setLinks(links.map(l => l.id === editingLink.id ? { ...l, ...editForm } : l))
+            setEditingLink(null)
+            toast.success('수정되었습니다')
+        } else {
+            toast.error('수정에 실패했습니다')
+        }
+    }
+
     // Filter links based on search query
     const filteredLinks = links.filter(link => {
         if (!searchQuery) return true
@@ -78,22 +126,21 @@ export default function LinkList({ status, keyProp, searchQuery = '' }: LinkList
         )
     })
 
-    if (loading) return <div className="text-center text-toss-grey-500 mt-10">링크 로딩 중...</div>
+    if (loading) {
+        return (
+            <div className="space-y-4">
+                {[1, 2, 3].map((i) => (
+                    <div key={i} className="toss-card h-32 animate-pulse bg-toss-grey-100"></div>
+                ))}
+            </div>
+        )
+    }
 
     if (filteredLinks.length === 0) {
         return (
-            <div className="text-center py-20">
-                <div className="bg-toss-grey-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Archive className="w-8 h-8 text-toss-grey-400" />
-                </div>
-                <h3 className="text-xl font-bold text-toss-grey-800">
-                    {searchQuery ? '검색 결과가 없습니다' : '링크가 없습니다'}
-                </h3>
-                <p className="text-toss-grey-500 mt-2">
-                    {searchQuery
-                        ? '다른 검색어로 시도해보세요.'
-                        : (status === 'active' ? '위의 URL을 붙여넣어 시작하세요!' : '이 목록은 비어 있습니다.')
-                    }
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+                <p className="text-lg text-toss-grey-500 font-medium">
+                    {searchQuery ? '검색 결과가 없어요' : (status === 'active' ? '보관된 링크가 없어요' : '비어있어요')}
                 </p>
             </div>
         )
@@ -101,101 +148,151 @@ export default function LinkList({ status, keyProp, searchQuery = '' }: LinkList
 
     return (
         <div className="space-y-4">
+            {/* Empty Trash Button */}
+            {status === 'trash' && links.length > 0 && (
+                <div className="flex justify-end mb-4">
+                    <button
+                        onClick={emptyTrash}
+                        className="text-sm text-toss-red font-medium hover:underline"
+                    >
+                        휴지통 비우기
+                    </button>
+                </div>
+            )}
+
             {filteredLinks.map((link) => (
-                <div key={link.id} className="toss-card flex flex-col gap-3 group hover:border-toss-blue/30 transition-all duration-300">
-                    <div className="flex justify-between items-start">
-                        <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                                <span className="px-2 py-0.5 bg-toss-blue-light text-toss-blue text-xs font-bold rounded-[6px]">
-                                    {link.category}
-                                </span>
-                                <span className="text-xs text-toss-grey-500">
-                                    {new Date(link.created_at).toLocaleDateString()}
-                                </span>
+                <div
+                    key={link.id}
+                    className="toss-card group transition-all active:scale-[0.98] flex gap-4"
+                >
+                    <div className="flex-1 min-w-0">
+                        <div className="flex justify-between items-start mb-2">
+                            <span className="text-[13px] font-bold text-toss-blue bg-toss-blue-light px-2 py-0.5 rounded-[6px]">
+                                {link.category}
+                            </span>
+                            <div className="flex gap-3">
+                                {status !== 'trash' && (
+                                    <>
+                                        <button
+                                            onClick={(e) => {
+                                                e.preventDefault()
+                                                updateStatus(link.id, 'trash')
+                                            }}
+                                            className="text-toss-grey-300 hover:text-toss-red transition-colors p-1"
+                                        >
+                                            <Trash2 className="w-5 h-5" />
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.preventDefault()
+                                                startEdit(link)
+                                            }}
+                                            className="text-toss-grey-300 hover:text-toss-blue transition-colors p-1"
+                                        >
+                                            <Edit2 className="w-5 h-5" />
+                                        </button>
+                                    </>
+                                )}
+                                {status === 'trash' && (
+                                    <>
+                                        <button
+                                            onClick={(e) => {
+                                                e.preventDefault()
+                                                updateStatus(link.id, 'active')
+                                            }}
+                                            className="text-toss-grey-300 hover:text-toss-blue transition-colors p-1"
+                                        >
+                                            <RefreshCw className="w-5 h-5" />
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.preventDefault()
+                                                deletePermanently(link.id)
+                                            }}
+                                            className="text-toss-grey-300 hover:text-toss-red transition-colors p-1"
+                                        >
+                                            <Trash2 className="w-5 h-5" />
+                                        </button>
+                                    </>
+                                )}
                             </div>
-                            <h3 className="font-bold text-lg text-toss-grey-900 leading-snug mb-1 truncate">
+                        </div>
+
+                        <a href={link.url} target="_blank" rel="noopener noreferrer" className="block">
+                            <h3 className="text-[18px] font-bold text-toss-grey-900 mb-1 line-clamp-1">
                                 {link.title || link.url}
                             </h3>
-                            <p className="text-sm text-toss-grey-600 line-clamp-2 leading-relaxed">
-                                {link.description || '요약 없음'}
+                            <p className="text-[15px] text-toss-grey-600 line-clamp-2 leading-relaxed">
+                                {link.description}
                             </p>
-                        </div>
+                        </a>
                     </div>
 
-                    <div className="flex items-center justify-between pt-2 border-t border-toss-grey-100 mt-1">
-                        <a
-                            href={link.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-sm font-semibold text-toss-blue hover:text-[#1B64DA] transition-colors py-2"
-                        >
-                            방문하기 <ExternalLink className="w-4 h-4" />
-                        </a>
-
-                        <div className="flex items-center gap-1">
-                            {status === 'active' && (
-                                <>
-                                    <button
-                                        onClick={() => updateStatus(link.id, 'archive')}
-                                        className="p-2 text-toss-grey-500 hover:text-toss-grey-800 hover:bg-toss-grey-100 rounded-full transition-all"
-                                        title="보관함으로 이동"
-                                    >
-                                        <Archive className="w-5 h-5" />
-                                    </button>
-                                    <button
-                                        onClick={() => updateStatus(link.id, 'trash')}
-                                        className="p-2 text-toss-grey-500 hover:text-toss-red hover:bg-toss-red-light rounded-full transition-all"
-                                        title="휴지통으로 이동"
-                                    >
-                                        <Trash2 className="w-5 h-5" />
-                                    </button>
-                                </>
-                            )}
-                            {status === 'archive' && (
-                                <>
-                                    <button
-                                        onClick={() => updateStatus(link.id, 'active')}
-                                        className="p-2 text-toss-grey-500 hover:text-toss-blue hover:bg-toss-blue-light rounded-full transition-all"
-                                        title="다시 활성화"
-                                    >
-                                        <RefreshCw className="w-5 h-5" />
-                                    </button>
-                                    <button
-                                        onClick={() => updateStatus(link.id, 'trash')}
-                                        className="p-2 text-toss-grey-500 hover:text-toss-red hover:bg-toss-red-light rounded-full transition-all"
-                                        title="휴지통으로 이동"
-                                    >
-                                        <Trash2 className="w-5 h-5" />
-                                    </button>
-                                </>
-                            )}
-                            {status === 'trash' && (
-                                <>
-                                    <button
-                                        onClick={() => updateStatus(link.id, 'active')}
-                                        className="p-2 text-toss-grey-500 hover:text-toss-blue hover:bg-toss-blue-light rounded-full transition-all"
-                                        title="복구"
-                                    >
-                                        <RefreshCw className="w-5 h-5" />
-                                    </button>
-                                    <button
-                                        onClick={() => deletePermanently(link.id)}
-                                        className="p-2 text-toss-red hover:bg-toss-red-light rounded-full transition-all"
-                                        title="영구 삭제"
-                                    >
-                                        <Trash2 className="w-5 h-5" />
-                                    </button>
-                                </>
-                            )}
+                    {link.image_url && (
+                        <div className="w-24 h-24 rounded-[12px] bg-toss-grey-50 overflow-hidden flex-shrink-0 border border-toss-grey-200">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                                src={link.image_url}
+                                alt={link.title}
+                                className="w-full h-full object-cover"
+                                onError={(e) => e.currentTarget.style.display = 'none'}
+                            />
                         </div>
-                        {/* Mobile fallback for opacity */}
-                        <div className="flex md:hidden items-center gap-1">
-                            {/* Duplicate buttons for mobile where hover doesn't exist - simplified for now, relying on group-hover for desktop */}
-                            {/* Actually, let's just make them always visible on mobile or use a menu. For now, let's remove opacity-0 for simplicity to ensure usability */}
+                    )}
+                </div>
+            ))}
+            {editingLink && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-5 px-4 animate-in fade-in duration-200">
+                    <div className="bg-white w-full max-w-sm rounded-[24px] p-6 shadow-2xl animate-in zoom-in-95 duration-200">
+                        <h3 className="text-[18px] font-bold text-toss-grey-900 mb-5">링크 수정</h3>
+
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-[13px] font-medium text-toss-grey-500 mb-1.5">카테고리</label>
+                                <input
+                                    type="text"
+                                    value={editForm.category}
+                                    onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
+                                    className="toss-input w-full"
+                                    placeholder="예: 개발, 요리, 뉴스"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-[13px] font-medium text-toss-grey-500 mb-1.5">제목</label>
+                                <input
+                                    type="text"
+                                    value={editForm.title}
+                                    onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
+                                    className="toss-input w-full"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-[13px] font-medium text-toss-grey-500 mb-1.5">설명</label>
+                                <textarea
+                                    value={editForm.description}
+                                    onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                                    className="toss-input w-full min-h-[80px] resize-none py-3"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex gap-3 mt-6">
+                            <button
+                                onClick={() => setEditingLink(null)}
+                                className="flex-1 py-3.5 bg-toss-grey-100 text-toss-grey-700 rounded-[16px] font-semibold text-[15px] active:scale-[0.98] transition-transform"
+                            >
+                                취소
+                            </button>
+                            <button
+                                onClick={saveEdit}
+                                className="flex-1 py-3.5 bg-toss-blue text-white rounded-[16px] font-semibold text-[15px] active:scale-[0.98] transition-transform shadow-lg shadow-toss-blue/20"
+                            >
+                                저장
+                            </button>
                         </div>
                     </div>
                 </div>
-            ))}
+            )}
         </div>
     )
 }

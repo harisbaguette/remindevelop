@@ -5,8 +5,7 @@ import { supabase } from '@/lib/supabaseClient'
 import { useRouter, useSearchParams } from 'next/navigation'
 import LinkInput from '@/components/LinkInput'
 import LinkList from '@/components/LinkList'
-import SplashScreen from '@/components/SplashScreen'
-import { Inbox, Archive, Trash2, LogOut, Sparkles, ArrowRight, Search, User } from 'lucide-react'
+import { Inbox, Archive, Trash2, User, Search, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 
 function HomeContent() {
@@ -15,148 +14,125 @@ function HomeContent() {
   const view = searchParams.get('view') || 'active'
   const [refreshKey, setRefreshKey] = useState(0)
   const [user, setUser] = useState<any>(null)
-  const [showSplash, setShowSplash] = useState(true)
   const [authChecked, setAuthChecked] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+
+  // Handle Share Intent Data
+  const sharedUrl = searchParams.get('url')
+  const sharedText = searchParams.get('text')
+  const sharedTitle = searchParams.get('title') // Not used yet but available
+  const initialLinkValue = sharedUrl || sharedText || ''
+
+  useEffect(() => {
+    if (initialLinkValue) {
+      // Optional: Auto-focus or just let it sit there. 
+      // If needed we can clear the query param to avoid persistence on refresh, 
+      // but replacing the route might reload the page.
+      // For now, just pre-fill.
+    }
+  }, [initialLinkValue])
 
   useEffect(() => {
     const checkUser = async () => {
       const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
-      setAuthChecked(true)
+      if (user) {
+        setUser(user)
+        setAuthChecked(true)
+      } else {
+        router.replace('/login')
+      }
     }
     checkUser()
-  }, [])
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    setUser(null)
-    router.push('/')
-  }
+  }, [router])
 
   const handleLinkAdded = () => {
     setRefreshKey(prev => prev + 1)
   }
+
 
   const TabItem = ({ viewName, icon: Icon, label }: { viewName: string, icon: any, label: string }) => {
     const isActive = view === viewName || (viewName === 'active' && !view)
     return (
       <Link
         href={viewName === 'active' ? '/' : `/?view=${viewName}`}
-        className={`flex flex-col items-center justify-center w-full py-3 transition-colors ${isActive
-          ? 'text-toss-blue'
+        className={`flex flex-col items-center justify-center w-full py-2 transition-colors ${isActive
+          ? 'text-toss-grey-900'
           : 'text-toss-grey-400'
           }`}
       >
-        <Icon className={`w-6 h-6 mb-1 ${isActive ? 'fill-current' : ''}`} strokeWidth={isActive ? 2.5 : 2} />
-        <span className="text-[10px] font-medium">{label}</span>
+        <Icon className={`w-7 h-7 mb-1 ${isActive ? 'stroke-[2.5px]' : 'stroke-[2px]'}`} />
+        <span className="text-[11px] font-medium">{label}</span>
       </Link>
     )
   }
 
-  if (showSplash) {
-    return <SplashScreen onFinish={() => setShowSplash(false)} />
-  }
-
-  // Landing Page (Not logged in)
-  if (authChecked && !user) {
-    return (
-      <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6 animate-in fade-in duration-500">
-        <div className="flex-1 flex flex-col items-center justify-center text-center">
-          <div className="w-24 h-24 bg-toss-blue/10 rounded-3xl flex items-center justify-center mb-8">
-            <Sparkles className="w-12 h-12 text-toss-blue" />
-          </div>
-          <h1 className="text-3xl font-bold text-toss-grey-900 mb-4">
-            링크 정리가<br />쉬워집니다
-          </h1>
-          <p className="text-toss-grey-600 leading-relaxed">
-            복잡한 링크들, AI가 알아서 분류해드려요.<br />
-            지금 바로 시작해보세요.
-          </p>
-        </div>
-        <div className="w-full max-w-md mb-8">
-          <button
-            onClick={() => router.push('/login')}
-            className="w-full bg-toss-blue hover:bg-blue-600 text-white font-bold py-4 rounded-2xl text-lg transition-colors flex items-center justify-center gap-2"
-          >
-            시작하기
-            <ArrowRight className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
-    )
+  // Redirecting or Loading
+  if (!authChecked || !user) {
+    return null
   }
 
   // Main App (Logged in)
-  return (
-    <div className="min-h-screen bg-toss-grey-50 pb-24">
-      {/* Header with Search */}
-      <header className="bg-white sticky top-0 z-50 px-5 py-3 border-b border-toss-grey-100 space-y-3">
-        <div className="flex justify-between items-center">
-          <h1 className="text-xl font-bold text-toss-grey-900">리마인드 보관소</h1>
-        </div>
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-toss-grey-400" />
-          <input
-            type="text"
-            placeholder="링크 검색..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-toss-grey-100 text-toss-grey-900 pl-11 pr-4 py-3 rounded-2xl text-sm font-medium focus:bg-white focus:ring-2 focus:ring-toss-blue transition-all outline-none placeholder:text-toss-grey-400"
-          />
-        </div>
-      </header>
+  if (authChecked && user) {
+    return (
+      <div className="min-h-screen bg-toss-grey-100 pb-24">
+        {/* Header */}
+        <header className="bg-toss-grey-100 sticky top-0 z-50 px-5 py-4 flex justify-between items-center">
+          <h1 className="text-[24px] font-bold text-toss-grey-900">보관소</h1>
+          <Link href="/settings" className="w-9 h-9 bg-white rounded-full flex items-center justify-center text-toss-grey-600 shadow-sm">
+            <User className="w-5 h-5" />
+          </Link>
+        </header>
 
-      <main className="max-w-md mx-auto p-5">
-        {view === 'active' && !searchQuery && (
-          <div className="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h2 className="text-2xl font-bold text-toss-grey-900 mb-2">
-              새로운 링크를<br />저장해볼까요?
-            </h2>
-            <p className="text-toss-grey-600 mb-6">AI가 내용을 분석해서 정리해드려요.</p>
-            <LinkInput onLinkAdded={handleLinkAdded} />
+        <main className="max-w-md mx-auto px-5 space-y-8">
+          {/* Input Section */}
+          <div className="sticky top-[72px] z-40 bg-toss-grey-100 pb-2">
+            <LinkInput onLinkAdded={handleLinkAdded} initialValue={initialLinkValue} />
           </div>
-        )}
 
-        <div className="space-y-4">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-lg font-bold text-toss-grey-900 flex items-center gap-2">
-              {searchQuery ? `'${searchQuery}' 검색 결과` : (
+          {/* Search Bar */}
+          <div className="relative">
+            <Search className="absolute left-0 top-1/2 -translate-y-1/2 w-5 h-5 text-toss-grey-400" />
+            <input
+              type="text"
+              placeholder="검색"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="toss-input pl-8 border-b border-toss-grey-300 focus:border-toss-grey-900 bg-transparent px-0 rounded-none"
+            />
+          </div>
+
+          <div>
+            <h3 className="text-[20px] font-bold text-toss-grey-900 mb-4">
+              {searchQuery ? '검색 결과' : (
                 <>
-                  {view === 'active' && '보관함'}
-                  {view === 'archive' && '완료된 링크'}
+                  {view === 'active' && '최근 보관함'}
+                  {view === 'archive' && '완료된 항목'}
                   {view === 'trash' && '휴지통'}
                 </>
               )}
             </h3>
+            <LinkList status={view} keyProp={refreshKey} searchQuery={searchQuery} />
           </div>
-          {/* Pass searchQuery to LinkList if implemented, for now just showing list */}
-          <LinkList status={view} keyProp={refreshKey} searchQuery={searchQuery} />
-        </div>
-      </main>
+        </main>
 
-      {/* Bottom Tab Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-toss-grey-100 pb-safe z-50">
-        <div className="flex justify-around max-w-md mx-auto">
-          <TabItem viewName="active" icon={Inbox} label="보관함" />
-          <TabItem viewName="archive" icon={Archive} label="완료" />
-          <TabItem viewName="trash" icon={Trash2} label="휴지통" />
-          <Link
-            href="/settings"
-            className="flex flex-col items-center justify-center w-full py-3 transition-colors text-toss-grey-400 hover:text-toss-grey-600"
-          >
-            <User className="w-6 h-6 mb-1" strokeWidth={2} />
-            <span className="text-[10px] font-medium">마이</span>
-          </Link>
-        </div>
-      </nav>
-    </div>
-  )
+        {/* Bottom Tab Bar */}
+        <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-toss-grey-200 pb-safe z-50 rounded-t-[20px] shadow-[0_-4px_16px_rgba(0,0,0,0.04)]">
+          <div className="flex justify-around max-w-md mx-auto px-2">
+            <TabItem viewName="active" icon={Inbox} label="보관함" />
+            <TabItem viewName="archive" icon={Archive} label="완료" />
+            <TabItem viewName="trash" icon={Trash2} label="휴지통" />
+          </div>
+        </nav>
+      </div>
+    )
+  }
+
+  return null
 }
 
 export default function Home() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-toss-grey-50">로딩중...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-toss-grey-100"><Loader2 className="w-8 h-8 animate-spin text-toss-blue" /></div>}>
       <HomeContent />
     </Suspense>
   )

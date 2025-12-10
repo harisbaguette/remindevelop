@@ -2,10 +2,16 @@
 
 import { useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
-import { Plus, Loader2 } from 'lucide-react'
+import { Loader2, ArrowUp } from 'lucide-react'
+import { toast } from 'sonner'
 
-export default function LinkInput({ onLinkAdded }: { onLinkAdded: () => void }) {
-    const [url, setUrl] = useState('')
+interface LinkInputProps {
+    onLinkAdded: () => void
+    initialValue?: string
+}
+
+export default function LinkInput({ onLinkAdded, initialValue = '' }: LinkInputProps) {
+    const [url, setUrl] = useState(initialValue)
     const [loading, setLoading] = useState(false)
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -35,6 +41,8 @@ export default function LinkInput({ onLinkAdded }: { onLinkAdded: () => void }) 
                 title: aiData.title,
                 description: aiData.summary,
                 category: aiData.category,
+                type: aiData.type || 'link',
+                image_url: aiData.image || null,
                 status: 'active'
             })
 
@@ -42,40 +50,36 @@ export default function LinkInput({ onLinkAdded }: { onLinkAdded: () => void }) 
 
             setUrl('')
             onLinkAdded()
+            toast.success('링크가 저장되었습니다')
         } catch (error) {
             console.error('Error adding link:', error)
-            alert('Failed to add link. Please try again.')
+            toast.error('링크 저장에 실패했습니다')
         } finally {
             setLoading(false)
         }
     }
 
     return (
-        <form onSubmit={handleSubmit} className="w-full">
-            <div className="flex flex-col gap-3">
-                <input
-                    type="url"
-                    value={url}
-                    onChange={(e) => setUrl(e.target.value)}
-                    placeholder="링크를 붙여넣으세요 (https://...)"
-                    className="toss-input"
-                    disabled={loading}
-                />
-                <button
-                    type="submit"
-                    disabled={loading || !url.trim()}
-                    className="toss-button"
-                >
-                    {loading ? (
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                    ) : (
-                        <span className="flex items-center gap-2 text-[17px]">
-                            <Plus className="w-5 h-5" />
-                            저장하기
-                        </span>
-                    )}
-                </button>
-            </div>
+        <form onSubmit={handleSubmit} className="w-full relative">
+            <input
+                type="text"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="복사한 링크를 붙여넣으세요"
+                className="toss-input pr-12"
+                disabled={loading}
+            />
+            <button
+                type="submit"
+                disabled={loading || !url.trim()}
+                className="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-toss-blue disabled:text-toss-grey-300 transition-colors"
+            >
+                {loading ? (
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                ) : (
+                    <ArrowUp className="w-6 h-6" />
+                )}
+            </button>
         </form>
     )
 }

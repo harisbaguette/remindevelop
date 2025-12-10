@@ -1,44 +1,76 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #191F28;
+  /* Toss Color System */
+  --toss-blue: #3182F6;
+  --toss-blue-light: #E8F3FF;
+  --toss-blue-dark: #1B64DA;
+
+  --toss-grey-900: #191F28;
+  --toss-grey-800: #333D4B;
+  --toss-grey-700: #4E5968;
+  --toss-grey-600: #6B7684;
+  --toss-grey-500: #8B95A1;
+  --toss-grey-400: #B0B8C1;
+  --toss-grey-300: #D1D6DB;
+  --toss-grey-200: #E5E8EB;
+  --toss-grey-100: #F2F4F6;
+  --toss-grey-50: #F9FAFB;
+
+  --toss-red: #F04452;
+  --toss-red-light: #FEECEF;
+
+  --font-base: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard Variable", Pretendard, Roboto, "Noto Sans KR", "Segoe UI", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
-  overflow-x: hidden;
+  font-family: var(--font-base);
+  color: var(--toss-grey-900);
+  background-color: var(--toss-grey-100);
+  margin: 0;
+  padding: 0;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 @layer utilities {
   .toss-card {
-    @apply bg-white/80 backdrop-blur-xl border border-white/40 rounded-[24px] shadow-[0_8px_32px_rgba(0, 0, 0, 0.04)];
+    @apply bg-white rounded-[24px] p-6;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   }
 
   .toss-input {
-    @apply w-full px-5 py-4 bg-toss-grey-50 border border-transparent rounded-[18px] text-toss-grey-900 placeholder:text-toss-grey-400 focus:bg-white focus:border-toss-blue focus:ring-4 focus:ring-toss-blue/10 transition-all duration-300 outline-none font-medium;
+    @apply w-full px-4 py-3.5 bg-transparent border-b-2 border-toss-grey-200 text-lg text-toss-grey-900 placeholder:text-toss-grey-400 outline-none transition-colors rounded-none;
   }
 
-  .toss-button {
-    @apply w-full py-4 bg-toss-blue text-white font-bold rounded-[18px] hover:bg-[#1B64DA] active:scale-[0.98] transition-all duration-200 shadow-[0_4px_14px_rgba(49, 130, 246, 0.3)] hover:shadow-[0_6px_20px_rgba(49, 130, 246, 0.4)];
+  .toss-input:focus {
+    @apply border-toss-grey-900;
   }
 
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
+  .toss-btn {
+    @apply w-full py-4 rounded-[16px] font-semibold text-[17px] transition-all active:scale-[0.98];
   }
 
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  .toss-btn-primary {
+    @apply bg-toss-blue text-white hover:bg-[#1B64DA];
+  }
+
+  .toss-btn-secondary {
+    @apply bg-toss-grey-100 text-toss-grey-700 hover:bg-toss-grey-200;
+  }
+
+  .toss-btn-ghost {
+    @apply bg-transparent text-toss-grey-600 hover:bg-toss-grey-50;
   }
 
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom, 20px);
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 }
